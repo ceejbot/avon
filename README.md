@@ -16,10 +16,10 @@ All four algorithms are different & will produce different sums. Choose the one 
 All four functions take an optional callback. If no callback is provided, they return promises. Use the flow control method you prefer! The calculated hash is a node Buffer.
 
 ```javascript
-var Blake2 = require('blake2');
+var Avon = require('avon');
 var assert = require('assert');
 
-Blake2.blake2b('my_file.dat')
+Avon.blake2b('my_file.dat')
 .then(function(hash)
 {
 	assert(hash instanceof Buffer);
@@ -29,12 +29,11 @@ Blake2.blake2b('my_file.dat')
 	console.error('noooooo! ' + err.message);
 }).done();
 
-Blake2.blake2bp('my_file.dat', function(err, buffer)
+Avon.blake2bp('my_file.dat', function(err, buffer)
 {
 	if (err) console.error('noooo!');
 	else console.log(buffer.toString('hex'))
 })
-
 ```
 
 ## Notes
