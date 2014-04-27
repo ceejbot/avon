@@ -1,6 +1,6 @@
 {
   "name": "avon",
-  "description": "node bindings for the blake2 hash",
+  "description": "node bindings for the blake2 cryptographic hash",
   "version": "0.0.0",
   "author": "C J Silverio <ceejceej@gmail.com>",
   "bugs": {
