@@ -1,13 +1,15 @@
-# blake2
+# avon
 
 Node bindings for the [blake2](https://blake2.net) cryptographic hash function.
 
 Blake2 provides four different hashing functions:
 
-* `blake2b`, `blake2bp`: 64-bit, single & multicore variations
-* `blake2s`, `blake2sp`: 32-bit and under cpus, single & multicore variations
+* `blake2b`, `blake2bp`: 64-bit architectures, single & multicore variations
+* `blake2s`, `blake2sp`: 32-bit and under architectures, single & multicore variations
 
 All four algorithms are different & will produce different sums. Choose the one that's appropriate for your use.
+
+[![Build Status](http://img.shields.io/travis/joyent/node.svg?style=flat)](http://travis-ci.org/ceejbot/scurry)
 
 ## Usage
 
