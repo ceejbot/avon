@@ -1,8 +1,11 @@
 {
-  "name": "blake2",
+  "name": "avon",
   "description": "node bindings for the blake2 hash",
   "version": "0.0.0",
   "author": "C J Silverio <ceejceej@gmail.com>",
+  "bugs": {
+    "url": "https://github.com/ceejbot/avon/issues"
+  },
   "dependencies": {
     "bluebird": "^1.2.3",
     "nan": "~0.8.0"
@@ -15,15 +18,21 @@
     "test": "test"
   },
   "gypfile": true,
+  "homepage": "https://github.com/ceejbot/avon",
   "keywords": [
     "blake2",
-    "hash"
+    "hash",
+    "cryptographic hash"
   ],
   "license": "ISC",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ceejbot/avon.git"
+  },
   "scripts": {
     "build": "node-gyp build",
-    "test": "lab -v -c test/test*.js",
+    "test": "lab -v -c -t 90 test/test*.js",
     "install": "node-gyp rebuild"
   }
 }

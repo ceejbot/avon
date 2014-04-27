@@ -1,5 +1,3 @@
-TESTS = test/*.js
-
 all: test
 
 build: clean configure compile
@@ -12,7 +10,7 @@ compile: configure
 	npm install .
 
 test: build
-	@./node_modules/.bin/lab -v -c $(TESTS)
+	@npm test
 
 clean:
 	node-gyp clean
