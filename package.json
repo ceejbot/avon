@@ -1,0 +1,29 @@
+{
+  "name": "blake2",
+  "description": "node bindings for the blake2 hash",
+  "version": "0.0.0",
+  "author": "C J Silverio <ceejceej@gmail.com>",
+  "dependencies": {
+    "bluebird": "^1.2.3",
+    "nan": "~0.8.0"
+  },
+  "devDependencies": {
+    "lab": "^3.1.0",
+    "must": "^0.11.0"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "gypfile": true,
+  "keywords": [
+    "blake2",
+    "hash"
+  ],
+  "license": "ISC",
+  "main": "index.js",
+  "scripts": {
+    "build": "node-gyp build",
+    "test": "lab -v -c test/test*.js",
+    "install": "node-gyp rebuild"
+  }
+}
