@@ -9,7 +9,7 @@ Blake2 provides four different hashing functions:
 
 All four algorithms are different & will produce different sums. Choose the one that's appropriate for your use.
 
-[![Build Status](http://img.shields.io/travis/joyent/node.svg?style=flat)](http://travis-ci.org/ceejbot/scurry)
+[![Build Status](http://img.shields.io/travis/ceejbot/avon.svg?style=flat)](http://travis-ci.org/ceejbot/avon)
 
 ## Usage
 
