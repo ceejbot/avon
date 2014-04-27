@@ -36,6 +36,11 @@ Avon.blake2bp('my_file.dat', function(err, buffer)
 })
 ```
 
+## TODO
+
+- Next release: take a buffer or string instead of a filename.
+- See about stream input.
+
 ## Notes
 
 V8 bindings made considerably easier thanks to rvagg's [NAN](https://github.com/rvagg/nan).
