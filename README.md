@@ -10,6 +10,7 @@ Blake2 provides four different hashing functions:
 All four algorithms are different & will produce different sums. Choose the one that's appropriate for your use.
 
 [![Build Status](http://img.shields.io/travis/ceejbot/avon.svg?style=flat)](http://travis-ci.org/ceejbot/avon)
+![Coverage](http://img.shields.io/badge/coverage-100%25-green.svg?style=flat)
 
 ## Usage
 
@@ -19,6 +20,28 @@ All four functions take an optional callback. If no callback is provided, they r
 var Avon = require('avon');
 var assert = require('assert');
 
+var buf = new Buffer('this is some input');
+
+Avon.blake2b(buf)
+.then(function(hash)
+{
+	assert(hash instanceof Buffer);
+	console.log(hash.toString('hex'));
+}, function(err)
+{
+	console.error('noooooo! ' + err.message);
+}).done();
+
+Avon.blake2bp(buf, function(err, buffer)
+{
+	if (err) console.error('noooo!');
+	else console.log(buffer.toString('hex'))
+})
+```
+
+The functions can also take a filename input:
+
+```javascript
 Avon.blake2b('my_file.dat')
 .then(function(hash)
 {
@@ -38,8 +61,8 @@ Avon.blake2bp('my_file.dat', function(err, buffer)
 
 ## TODO
 
-- Next release: take a buffer or string instead of a filename.
 - See about stream input.
+- BREAK THE API and provide file-specific functions so we can handle strings.
 
 ## Notes
 
