@@ -6,6 +6,7 @@
 			"sources":
 			[
 				"src/blake2.cpp",
+				"src/sumbuffer.cpp",
 				"blake2_code_20140114/b2sum/b2sum.c",
 				"blake2_code_20140114/sse/blake2b.c",
 				"blake2_code_20140114/sse/blake2bp.c",
