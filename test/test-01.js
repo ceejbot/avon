@@ -108,6 +108,7 @@ describe('blake2', function()
 			fs.readFile(testp, function(err, data)
 			{
 				demand(err).not.exist();
+				console.log(data.length, data[0], data[1], data[2]);
 
 				Blake2.blake2b(data, function(err, hash)
 				{

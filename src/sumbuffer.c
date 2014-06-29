@@ -23,7 +23,7 @@ int blake2s_buffer(const void *buffer, size_t length, void *resstream)
 	return ret;
 }
 
-int blake2b_buffer(const void *buffer, size_t length, void *resstream)
+int blake2b_buffer(const char *buffer, size_t length, void *resstream)
 {
 	int ret = -1;
 	blake2b_state S[1];
@@ -35,7 +35,6 @@ int blake2b_buffer(const void *buffer, size_t length, void *resstream)
 
 	return ret;
 }
-
 
 int blake2sp_buffer(const void *buffer, size_t length, void *resstream)
 {

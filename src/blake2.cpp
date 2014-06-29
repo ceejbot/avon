@@ -190,8 +190,13 @@ NAN_METHOD(HashBuffer)
 	NanScope();
 
 	int algo = args[0]->Uint32Value();
-	size_t length = node::Buffer::Length(args[1]->ToObject());
-	char* data = node::Buffer::Data(args[1]->ToObject());
+	v8::Local<v8::Object> buffer = args[1].As<v8::Object>();
+	size_t length = node::Buffer::Length(buffer);
+	char* data = node::Buffer::Data(buffer);
+
+fprintf(stderr, "buffer got len %d\n", length);
+fprintf(stderr, "first 3 chars: %d %d %d\n", data[0], data[1], data[2]);
+
 
 	NanCallback *callback = new NanCallback(args[2].As<Function>());
 	NanAsyncQueueWorker(new BufferWorker(algo, data, length, callback));
