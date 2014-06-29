@@ -7,7 +7,8 @@ var
     describe = lab.describe,
     it       = lab.it,
     demand   = require('must'),
-	path     = require('path'),
+    fs       = require('fs'),
+    path     = require('path'),
     Blake2   = require('../index')
     ;
 
@@ -92,6 +93,21 @@ describe('blake2', function()
 				done();
 			});
 		});
+
+        it('hashes a buffer', function(done)
+        {
+			fs.readFile(path.resolve(__dirname, '../index.js'), function(err, data)
+			{
+				demand(err).not.exist();
+
+				Blake2.blake2b(data, function(err, hash)
+				{
+					demand(err).not.exist();
+					hash.toString('hex').must.equal(first);
+					done();
+				});
+			});
+        });
 	});
 
 	describe('blake2bp', function()
