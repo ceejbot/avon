@@ -12,12 +12,13 @@ var
     Blake2   = require('../index')
     ;
 
+var correct2B = '7eb5d436ac77cb137329e74074501e484f4a9ed15f32b4be56842a8f285ebe4989cf89dd3794a8aee56e5964f3f5cd07f1b019611ce724141fd2a4b245d0d1a0';
+var testp = path.resolve(__dirname, './test.png');
+
 describe('blake2', function()
 {
 	describe('core', function()
 	{
-		var testp = path.resolve(__dirname, '../index.js');
-
 		it('exports four hash functions', function(done)
 		{
 			Blake2.must.be.an.object();
@@ -72,7 +73,6 @@ describe('blake2', function()
 
 		it('hashes a file', function(done)
 		{
-			var testp = path.resolve(__dirname, '../index.js');
 			Blake2.blake2b(testp, function(err, hash)
 			{
 				demand(err).not.exist();
@@ -83,9 +83,18 @@ describe('blake2', function()
 			});
 		});
 
-		it('hashes to the same value', function(done)
+		it('hashes correctly', function(done)
 		{
-			var testp = path.resolve(__dirname, '../index.js');
+			Blake2.blake2b(testp, function(err, hash)
+			{
+				demand(err).not.exist();
+				hash.toString('hex').must.equal(correct2B);
+				done();
+			});
+		});
+
+		it('hashes to the same value when run twice', function(done)
+		{
 			Blake2.blake2b(testp, function(err, hash)
 			{
 				demand(err).not.exist();
@@ -94,16 +103,16 @@ describe('blake2', function()
 			});
 		});
 
-        it('hashes a buffer', function(done)
+        it('hashes a buffer correctly', function(done)
         {
-			fs.readFile(path.resolve(__dirname, '../index.js'), function(err, data)
+			fs.readFile(testp, function(err, data)
 			{
 				demand(err).not.exist();
 
 				Blake2.blake2b(data, function(err, hash)
 				{
 					demand(err).not.exist();
-					hash.toString('hex').must.equal(first);
+					hash.toString('hex').must.equal(correct2B);
 					done();
 				});
 			});
@@ -114,7 +123,6 @@ describe('blake2', function()
 	{
 		it('hashes a file', function(done)
 		{
-			var testp = path.resolve(__dirname, '../index.js');
 			Blake2.blake2bp(testp)
 			.then(function(hash)
 			{
@@ -130,7 +138,6 @@ describe('blake2', function()
 	{
 		it('hashes a file', function(done)
 		{
-			var testp = path.resolve(__dirname, '../index.js');
 			Blake2.blake2s(testp)
 			.then(function(hash)
 			{
@@ -145,7 +152,6 @@ describe('blake2', function()
 	{
 		it('hashes a file', function(done)
 		{
-			var testp = path.resolve(__dirname, '../index.js');
 			Blake2.blake2sp(testp)
 			.then(function(hash)
 			{

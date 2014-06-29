@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <node.h>
 #include "nan.h"
 
