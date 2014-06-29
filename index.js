@@ -2,24 +2,17 @@ var b2File = require('./build/Release/blake2').blake2_file;
 var b2Buffer = require('./build/Release/blake2').blake2_buffer;
 var P = require('bluebird');
 
-function wrapperFile(algo, fname)
+function wrapper(algo, input)
 {
 	var deferred = P.defer();
 
-	b2File(algo, fname, function(err, result)
-	{
-		if (err) deferred.reject(err);
-		else deferred.resolve(result);
-	});
+	var func;
+	if (Buffer.isBuffer(input))
+		func = b2Buffer;
+	else
+		func = b2File;
 
-	return deferred.promise;
-}
-
-function wrapperBuffer(algo, buf)
-{
-	var deferred = P.defer();
-
-	b2Buffer(algo, buf, function(err, result)
+	func(algo, input, function(err, result)
 	{
 		if (err) deferred.reject(err);
 		else deferred.resolve(result);
@@ -30,34 +23,22 @@ function wrapperBuffer(algo, buf)
 
 function blake2b(input)
 {
-	if (Buffer.isBuffer(input))
-		return wrapperBuffer(0, input)
-	else
-		return wrapperFile(0, input);
+	return wrapper(0, input)
 }
 
 function blake2bp(input, callback)
 {
-	if (Buffer.isBuffer(input))
-		return wrapperBuffer(1, input)
-	else
-		return wrapperFile(1, input);
+	return wrapper(1, input)
 }
 
 function blake2s(input, callback)
 {
-	if (Buffer.isBuffer(input))
-		return wrapperBuffer(2, input)
-	else
-		return wrapperFile(2, input);
+	return wrapper(2, input);
 }
 
 function blake2sp(input, callback)
 {
-	if (Buffer.isBuffer(input))
-		return wrapperBuffer(3, input)
-	else
-		return wrapperFile(3, input);
+	return wrapper(3, input);
 }
 
 module.exports =
