@@ -63,6 +63,7 @@ Avon.blake2bp('my_file.dat', function(err, buffer)
 
 - See about stream input.
 - BREAK THE API and provide file-specific functions so we can handle strings.
+- Refactor `blake2.cpp` to simplify.
 
 ## Notes
 
