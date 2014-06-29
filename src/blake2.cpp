@@ -115,11 +115,11 @@ NAN_METHOD(HashFile)
 class BufferWorker : public NanAsyncWorker
 {
 	public:
-		BufferWorker(int algo, char* buf, size_t length, NanCallback *callback)
+		BufferWorker(int algo, char* buf, size_t bufferLen, NanCallback *callback)
 		: NanAsyncWorker(callback)
 			, algorithm(algo)
 			, buffer(buf)
-			, length(length)
+			, bufferLen(bufferLen)
 		{
 		}
 
@@ -134,7 +134,7 @@ class BufferWorker : public NanAsyncWorker
 			switch (algorithm)
 			{
 				case B:
-					func = blake2s_buffer;
+					func = blake2b_buffer;
 					length = BLAKE2B_OUTBYTES;
 					break;
 
@@ -158,7 +158,7 @@ class BufferWorker : public NanAsyncWorker
 					return;
 			}
 
-			if (func(buffer, length, hash) < 0)
+			if (func(buffer, bufferLen, hash) < 0)
 			{
 				SetErrorMessage("Failed to calculate hash.");
 				return;
@@ -179,6 +179,7 @@ class BufferWorker : public NanAsyncWorker
 	private:
 		int algorithm;
 		char* buffer;
+		size_t bufferLen;
 		size_t length;
 		// The 2S hashes emit 32 bytes instead of 64, so we get away with
 		// this size.
@@ -190,13 +191,9 @@ NAN_METHOD(HashBuffer)
 	NanScope();
 
 	int algo = args[0]->Uint32Value();
-	v8::Local<v8::Object> buffer = args[1].As<v8::Object>();
+	Local<Object> buffer = args[1].As<Object>();
 	size_t length = node::Buffer::Length(buffer);
 	char* data = node::Buffer::Data(buffer);
-
-fprintf(stderr, "buffer got len %d\n", length);
-fprintf(stderr, "first 3 chars: %d %d %d\n", data[0], data[1], data[2]);
-
 
 	NanCallback *callback = new NanCallback(args[2].As<Function>());
 	NanAsyncQueueWorker(new BufferWorker(algo, data, length, callback));

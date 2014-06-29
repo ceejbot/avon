@@ -20,10 +20,9 @@ describe('blake2', function()
 {
 	before(function(done)
 	{
-		fs.readFile(testp, function(err, data)
+		fs.readFile(testp, null, function(err, data)
 		{
 			demand(err).not.exist();
-			console.log(data.length, data[0], data[1], data[2]);
 			testbuffer = data;
 			done();
 		});
