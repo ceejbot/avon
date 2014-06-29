@@ -14,9 +14,21 @@ var
 
 var correct2B = '7eb5d436ac77cb137329e74074501e484f4a9ed15f32b4be56842a8f285ebe4989cf89dd3794a8aee56e5964f3f5cd07f1b019611ce724141fd2a4b245d0d1a0';
 var testp = path.resolve(__dirname, './test.png');
+var testbuffer;
 
 describe('blake2', function()
 {
+	before(function(done)
+	{
+		fs.readFile(testp, function(err, data)
+		{
+			demand(err).not.exist();
+			console.log(data.length, data[0], data[1], data[2]);
+			testbuffer = data;
+			done();
+		});
+	});
+
 	describe('core', function()
 	{
 		it('exports four hash functions', function(done)
@@ -105,23 +117,19 @@ describe('blake2', function()
 
         it('hashes a buffer correctly', function(done)
         {
-			fs.readFile(testp, function(err, data)
+			Blake2.blake2b(testbuffer, function(err, hash)
 			{
 				demand(err).not.exist();
-				console.log(data.length, data[0], data[1], data[2]);
-
-				Blake2.blake2b(data, function(err, hash)
-				{
-					demand(err).not.exist();
-					hash.toString('hex').must.equal(correct2B);
-					done();
-				});
+				hash.toString('hex').must.equal(correct2B);
+				done();
 			});
         });
 	});
 
 	describe('blake2bp', function()
 	{
+		var result;
+
 		it('hashes a file', function(done)
 		{
 			Blake2.blake2bp(testp)
@@ -129,14 +137,26 @@ describe('blake2', function()
 			{
 				hash.must.be.instanceof(Buffer);
 				hash.length.must.equal(64);
+				result = hash.toString('hex');
 				done();
 			}).done();
 		});
 
+		it('hashes a buffer', function(done)
+		{
+			Blake2.blake2bp(testbuffer, function(err, hash)
+			{
+				demand(err).not.exist();
+				hash.toString('hex').must.equal(result);
+				done();
+			});
+		});
 	});
 
 	describe('blake2s', function()
 	{
+		var result;
+
 		it('hashes a file', function(done)
 		{
 			Blake2.blake2s(testp)
@@ -144,6 +164,17 @@ describe('blake2', function()
 			{
 				hash.must.be.instanceof(Buffer);
 				hash.length.must.equal(32);
+				result = hash.toString('hex');
+				done();
+			}).done();
+		});
+
+		it('hashes a buffer', function(done)
+		{
+			Blake2.blake2s(testbuffer)
+			.then(function(hash)
+			{
+				hash.toString('hex').must.equal(result);
 				done();
 			}).done();
 		});
@@ -151,6 +182,8 @@ describe('blake2', function()
 
 	describe('blake2sp', function()
 	{
+		var result;
+
 		it('hashes a file', function(done)
 		{
 			Blake2.blake2sp(testp)
@@ -158,6 +191,17 @@ describe('blake2', function()
 			{
 				hash.must.be.instanceof(Buffer);
 				hash.length.must.equal(32);
+				result = hash.toString('hex');
+				done();
+			}).done();
+		});
+
+		it('hashes a buffer', function(done)
+		{
+			Blake2.blake2sp(testbuffer)
+			.then(function(hash)
+			{
+				hash.toString('hex').must.equal(result);
 				done();
 			}).done();
 		});
