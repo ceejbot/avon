@@ -205,4 +205,38 @@ describe('blake2', function()
 			}).done();
 		});
 	});
+
+	describe('errors', function()
+	{
+		it('responds with an error when asked to hash file that doesn\'t exist', function(done)
+		{
+			Blake2.blake2sp('idonotexist.jpg', function(err, hash)
+			{
+				err.must.be.instanceof(Error);
+				err.message.must.equal('Could not open file to hash.');
+				done();
+			});
+		});
+
+		it('responds with an error when given an unknown hash type', function(done)
+		{
+			var b2Buffer = require('../build/Release/blake2').blake2_buffer;
+			b2Buffer(17, new Buffer('that does not exist'), function(err, result)
+			{
+				err.must.be.instanceof(Error);
+				err.message.must.equal('Unknown hash type.');
+				done();
+			});
+		});
+
+		it('responds with an error if you pass a non-string or buffer', function(done)
+		{
+			Blake2.blake2sp({ foo: 'bar' }, function(err, hash)
+			{
+				err.must.be.instanceof(Error);
+				err.message.must.equal('You must pass either a buffer or a filename as input.');
+				done();
+			});
+		});
+	});
 });

@@ -2,15 +2,19 @@ var b2File = require('./build/Release/blake2').blake2_file;
 var b2Buffer = require('./build/Release/blake2').blake2_buffer;
 var P = require('bluebird');
 
+const B = 0, BP = 1, S = 2, SP = 3;
+
 function wrapper(algo, input)
 {
-	var deferred = P.defer();
-
 	var func;
 	if (Buffer.isBuffer(input))
 		func = b2Buffer;
-	else
+	else if (typeof input === 'string')
 		func = b2File;
+	else
+		return P.reject(new Error('You must pass either a buffer or a filename as input.'));
+
+	var deferred = P.defer();
 
 	func(algo, input, function(err, result)
 	{
@@ -23,22 +27,22 @@ function wrapper(algo, input)
 
 function blake2b(input)
 {
-	return wrapper(0, input)
+	return wrapper(B, input)
 }
 
 function blake2bp(input, callback)
 {
-	return wrapper(1, input)
+	return wrapper(BP, input)
 }
 
 function blake2s(input, callback)
 {
-	return wrapper(2, input);
+	return wrapper(S, input);
 }
 
 function blake2sp(input, callback)
 {
-	return wrapper(3, input);
+	return wrapper(SP, input);
 }
 
 module.exports =
