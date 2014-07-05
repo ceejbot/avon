@@ -3,13 +3,11 @@
 #include "nan.h"
 
 #include "../blake2_code_20140114/sse/blake2.h"
-#include "b2node.h"
+#include "avon.h"
 
 #define HERE() ({fprintf(stderr, "@%d\n", __LINE__);})
 
 using namespace v8;
-
-enum algorithms_t { B, BP, S, SP };
 
 //------ operate on files
 

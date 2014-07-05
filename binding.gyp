@@ -5,8 +5,8 @@
 			"target_name": "blake2",
 			"sources":
 			[
-				"src/blake2.cpp",
-				"src/sumbuffer.cpp",
+				"src/avon.cc",
+				"src/sumbuffer.c",
 				"blake2_code_20140114/b2sum/b2sum.c",
 				"blake2_code_20140114/sse/blake2b.c",
 				"blake2_code_20140114/sse/blake2bp.c",

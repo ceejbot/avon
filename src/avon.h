@@ -1,6 +1,8 @@
 #ifdef __cplusplus
 extern "C"
 {
+    enum algorithms_t { B, BP, S, SP };
+
     typedef int (*blake2fn)(FILE *, void *);
 
     int blake2b_stream(FILE *stream, void *resstream);
