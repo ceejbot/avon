@@ -4,7 +4,7 @@ var
     P        = require('bluebird')
 	;
 
-const B = 0, BP = 1, S = 2, SP = 3;
+var B = 0, BP = 1, S = 2, SP = 3;
 
 function wrapper(algo, input)
 {

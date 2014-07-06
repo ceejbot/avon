@@ -26,14 +26,15 @@ Streamer::~Streamer()
 
 void Streamer::Initialize(Handle<Object> exports)
 {
-    NanScope();
     Local<FunctionTemplate> t = NanNew<FunctionTemplate>(New);
-    t->InstanceTemplate()->SetInternalFieldCount(0);
+    t->SetClassName(NanNew("Streamer"));
+    t->InstanceTemplate()->SetInternalFieldCount(1);
 
     NODE_SET_PROTOTYPE_METHOD(t, "update", UpdateB);
     NODE_SET_PROTOTYPE_METHOD(t, "final", FinalB);
 
-    t->Set(NanNew("Streamer"), t->GetFunction());
+    constructor = Persistent<Function>::New(t->GetFunction());
+    exports->Set(NanNew("Streamer"), constructor);
 }
 
 NAN_METHOD(Streamer::New)
@@ -45,7 +46,7 @@ NAN_METHOD(Streamer::New)
     	int algo = args[0]->Uint32Value();
         Streamer* obj = new Streamer(algo);
         obj->Wrap(args.This());
-        return args.This();
+        NanReturnValue(args.This());
     }
     else
     {
@@ -72,19 +73,9 @@ NAN_METHOD(Streamer::UpdateB)
 NAN_METHOD(Streamer::FinalB)
 {
     NanScope();
-
     Streamer* hash = ObjectWrap::Unwrap<Streamer>(args.Holder());
     hash->Final();
-
-	NanCallback *callback = new NanCallback(args[0].As<Function>());
-	Local<Value> argv[] =
-	{
-		Local<Value>::New(Null()),
-		NanNewBufferHandle((char *)hash->result, hash->resultLen)
-	};
-	callback->Call(2, argv);
-
-    NanReturnUndefined();
+    NanReturnValue(NanNewBufferHandle((char *)hash->result, hash->resultLen));
 }
 
 void Streamer::Update(const void *buffer, size_t length)

@@ -5,22 +5,26 @@ var
     util     = require('util')
 	;
 
-const B = 0, BP = 1, S = 2, SP = 3;
+var B = 0, BP = 1, S = 2, SP = 3;
 
 function StreamingB2B()
 {
 	// TODO algorithm is ignored right now
 	return new blake2.b2_stream(B);
 }
-util.inherits(StreamingB2B, stream.WritableStream);
+util.inherits(StreamingB2B, stream.Writable);
 
-
-StreamingB2B.prototype.update = function(buf)
+StreamingB2B.prototype._write = function(data, encoding, callback)
 {
-    // TODO
+    this.update(data);
+    callback();
 };
 
 StreamingB2B.prototype.digest = function(type)
 {
-    // TODO
-}
+    var buf = this.final();
+    return buf.toString(type ? type : 'hex');
+};
+
+
+module.exports = StreamingB2B;
