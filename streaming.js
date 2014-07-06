@@ -7,24 +7,26 @@ var
 
 var B = 0, BP = 1, S = 2, SP = 3;
 
-function StreamingB2B()
+function createHash(algorithm)
 {
 	// TODO algorithm is ignored right now
-	return new blake2.b2_stream(B);
+	var result = new blake2.Streamer(B);
+    stream.Writable.call(result);
+    return result;
 }
-util.inherits(StreamingB2B, stream.Writable);
+util.inherits(blake2.Streamer, stream.Writable);
 
-StreamingB2B.prototype._write = function(data, encoding, callback)
+blake2.Streamer.prototype._write = function(data, encoding, callback)
 {
     this.update(data);
     callback();
 };
 
-StreamingB2B.prototype.digest = function(type)
+blake2.Streamer.prototype.digest = function(type)
 {
     var buf = this.final();
     return buf.toString(type ? type : 'hex');
 };
 
 
-module.exports = StreamingB2B;
+module.exports = createHash;

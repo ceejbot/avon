@@ -206,7 +206,6 @@ void InitAll(Handle<Object> exports)
 	exports->Set(NanNew<String>("b2_file"), FunctionTemplate::New(HashFile)->GetFunction());
 	exports->Set(NanNew<String>("b2_buffer"), FunctionTemplate::New(HashBuffer)->GetFunction());
 	Streamer::Initialize(exports);
-	exports->Set(NanNew<String>("b2_stream"), FunctionTemplate::New(Streamer::New)->GetFunction());
 }
 
 NODE_MODULE(blake2, InitAll)
