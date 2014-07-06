@@ -2,7 +2,7 @@
 #include <node.h>
 #include "nan.h"
 
-#include "../blake2_code_20140114/sse/blake2.h"
+#include "blake2.h"
 #include "avon.h"
 
 #define HERE() ({fprintf(stderr, "@%d\n", __LINE__);})
@@ -133,22 +133,22 @@ class BufferWorker : public NanAsyncWorker
 			{
 				case B:
 					func = blake2b_buffer;
-					length = BLAKE2B_OUTBYTES;
+					resultLen = BLAKE2B_OUTBYTES;
 					break;
 
 				case BP:
 					func = blake2bp_buffer;
-					length = BLAKE2B_OUTBYTES;
+					resultLen = BLAKE2B_OUTBYTES;
 					break;
 
 				case S:
 					func = blake2s_buffer;
-					length = BLAKE2S_OUTBYTES;
+					resultLen = BLAKE2S_OUTBYTES;
 					break;
 
 				case SP:
 					func = blake2sp_buffer;
-					length = BLAKE2S_OUTBYTES;
+					resultLen = BLAKE2S_OUTBYTES;
 					break;
 
 				default:
@@ -169,7 +169,7 @@ class BufferWorker : public NanAsyncWorker
 			Local<Value> argv[] =
 			{
 				Local<Value>::New(Null()),
-				NanNewBufferHandle(hash, length)
+				NanNewBufferHandle(hash, resultLen)
 			};
 			callback->Call(2, argv);
 		};
@@ -178,7 +178,7 @@ class BufferWorker : public NanAsyncWorker
 		int algorithm;
 		char* buffer;
 		size_t bufferLen;
-		size_t length;
+		size_t resultLen;
 		// The 2S hashes emit 32 bytes instead of 64, so we get away with
 		// this size.
 		char hash[BLAKE2B_OUTBYTES];
@@ -203,8 +203,10 @@ NAN_METHOD(HashBuffer)
 
 void InitAll(Handle<Object> exports)
 {
-	exports->Set(NanNew<String>("blake2_file"), FunctionTemplate::New(HashFile)->GetFunction());
-	exports->Set(NanNew<String>("blake2_buffer"), FunctionTemplate::New(HashBuffer)->GetFunction());
+	exports->Set(NanNew<String>("b2_file"), FunctionTemplate::New(HashFile)->GetFunction());
+	exports->Set(NanNew<String>("b2_buffer"), FunctionTemplate::New(HashBuffer)->GetFunction());
+	Streamer::Initialize(exports);
+	exports->Set(NanNew<String>("b2_stream"), FunctionTemplate::New(Streamer::New)->GetFunction());
 }
 
 NODE_MODULE(blake2, InitAll)

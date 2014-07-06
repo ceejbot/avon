@@ -220,7 +220,7 @@ describe('blake2', function()
 
 		it('responds with an error when given an unknown hash type', function(done)
 		{
-			var b2Buffer = require('../build/Release/blake2').blake2_buffer;
+			var b2Buffer = require('../build/Release/blake2').b2_buffer;
 			b2Buffer(17, new Buffer('that does not exist'), function(err, result)
 			{
 				err.must.be.instanceof(Error);
