@@ -33,8 +33,7 @@ void Streamer::Initialize(Handle<Object> exports)
     NODE_SET_PROTOTYPE_METHOD(t, "update", UpdateB);
     NODE_SET_PROTOTYPE_METHOD(t, "final", FinalB);
 
-    constructor = Persistent<Function>::New(t->GetFunction());
-    exports->Set(NanNew("Streamer"), constructor);
+    exports->Set(NanNew<String>("Streamer"), t->GetFunction());
 }
 
 NAN_METHOD(Streamer::New)
@@ -52,7 +51,7 @@ NAN_METHOD(Streamer::New)
     {
         const int argc = 1;
         Local<Value> argv[argc] = { args[0] };
-        NanReturnValue(constructor->NewInstance(argc, argv));
+        NanReturnValue(NanNew(constructor)->NewInstance(argc, argv));
     }
 }
 
