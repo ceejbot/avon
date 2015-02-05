@@ -200,11 +200,11 @@ NAN_METHOD(HashBuffer)
 
 // ------------ ceremony
 
-void InitAll(Handle<Object> exports)
+void InitAll(Handle<Object> exports, Handle<Object> module)
 {
 	exports->Set(NanNew<String>("b2_file"), NanNew<FunctionTemplate>(HashFile)->GetFunction());
 	exports->Set(NanNew<String>("b2_buffer"), NanNew<FunctionTemplate>(HashBuffer)->GetFunction());
-	Streamer::Initialize(exports);
+	Streamer::Initialize(exports, module);
 }
 
 NODE_MODULE(blake2, InitAll)

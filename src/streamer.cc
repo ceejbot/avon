@@ -24,15 +24,16 @@ Streamer::~Streamer()
 {
 }
 
-void Streamer::Initialize(Handle<Object> exports)
+void Streamer::Initialize(Handle<Object> exports, Handle<Object> module)
 {
     Local<FunctionTemplate> t = NanNew<FunctionTemplate>(New);
-    t->SetClassName(NanNew("Streamer"));
-    t->InstanceTemplate()->SetInternalFieldCount(1);
 
+    t->SetClassName(NanNew<String>("Streamer"));
+    t->InstanceTemplate()->SetInternalFieldCount(1);
     NODE_SET_PROTOTYPE_METHOD(t, "update", UpdateB);
     NODE_SET_PROTOTYPE_METHOD(t, "final", FinalB);
 
+    NanAssignPersistent<v8::Function>(constructor, t->GetFunction());
     exports->Set(NanNew<String>("Streamer"), t->GetFunction());
 }
 
@@ -45,13 +46,15 @@ NAN_METHOD(Streamer::New)
     	int algo = args[0]->Uint32Value();
         Streamer* obj = new Streamer(algo);
         obj->Wrap(args.This());
+        printf("wrapped\n");
         NanReturnValue(args.This());
     }
     else
     {
         const int argc = 1;
         Local<Value> argv[argc] = { args[0] };
-        NanReturnValue(NanNew(constructor)->NewInstance(argc, argv));
+        Local<Function> cons = NanNew<Function>(constructor);
+        NanReturnValue(cons->NewInstance(argc, argv));
     }
 }
 
