@@ -80,7 +80,7 @@ class FileWorker : public NanAsyncWorker
 			NanScope();
 			Local<Value> argv[] =
 			{
-				Local<Value>::New(Null()),
+				NanNull(),
 				NanNewBufferHandle(hash, length)
 			};
 			callback->Call(2, argv);
@@ -100,10 +100,9 @@ NAN_METHOD(HashFile)
 	NanScope();
 
 	int algo = args[0]->Uint32Value();
-	size_t count;
-	char* name = NanCString(args[1], &count);
+	NanAsciiString* name = new NanAsciiString(args[1]);
 	NanCallback *callback = new NanCallback(args[2].As<Function>());
-	NanAsyncQueueWorker(new FileWorker(callback, algo, name));
+	NanAsyncQueueWorker(new FileWorker(callback, algo, **name));
 
 	NanReturnUndefined();
 }
@@ -168,7 +167,7 @@ class BufferWorker : public NanAsyncWorker
 			NanScope();
 			Local<Value> argv[] =
 			{
-				Local<Value>::New(Null()),
+				NanNull(),
 				NanNewBufferHandle(hash, resultLen)
 			};
 			callback->Call(2, argv);
@@ -203,8 +202,8 @@ NAN_METHOD(HashBuffer)
 
 void InitAll(Handle<Object> exports)
 {
-	exports->Set(NanNew<String>("b2_file"), FunctionTemplate::New(HashFile)->GetFunction());
-	exports->Set(NanNew<String>("b2_buffer"), FunctionTemplate::New(HashBuffer)->GetFunction());
+	exports->Set(NanNew<String>("b2_file"), NanNew<FunctionTemplate>(HashFile)->GetFunction());
+	exports->Set(NanNew<String>("b2_buffer"), NanNew<FunctionTemplate>(HashBuffer)->GetFunction());
 	Streamer::Initialize(exports);
 }
 

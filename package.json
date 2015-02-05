@@ -8,12 +8,14 @@
   },
   "dependencies": {
     "bindings": "^1.2.1",
-    "bluebird": "^1.2.3",
-    "nan": "~1.2.0",
-    "readable-stream": "^1.0.27-1"
+    "bluebird": "~2.9.6",
+    "nan": "~1.6.1",
+    "readable-stream": "~1.0.33"
   },
   "devDependencies": {
-    "lab": "^3.2.1",
+    "blanket": "~1.1.6",
+    "mocha": "~2.1.0",
+    "mocoverage": "~1.0.0",
     "must": "^0.12.0"
   },
   "directories": {
