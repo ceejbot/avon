@@ -13,9 +13,7 @@
     "readable-stream": "~1.0.33"
   },
   "devDependencies": {
-    "blanket": "~1.1.6",
-    "mocha": "~2.1.0",
-    "mocoverage": "~1.0.0",
+    "lab": "~5.2.1",
     "must": "^0.12.0"
   },
   "directories": {

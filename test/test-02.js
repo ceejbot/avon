@@ -1,7 +1,8 @@
 'use strict';
 
 var
-    lab        = require('lab'),
+    Lab        = require('lab'),
+    lab        = exports.lab = Lab.script(),
     before     = lab.before,
     after      = lab.after,
     describe   = lab.describe,
