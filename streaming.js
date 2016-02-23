@@ -11,6 +11,7 @@ function createHash(algorithm)
 {
 	// TODO algorithm is ignored right now
 	var result = new blake2.Streamer(B);
+    console.log('constructed');
     stream.Writable.call(result);
     return result;
 }

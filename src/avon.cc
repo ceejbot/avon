@@ -11,11 +11,11 @@ using namespace v8;
 
 //------ operate on files
 
-class FileWorker : public NanAsyncWorker
+class FileWorker : public Nan::AsyncWorker
 {
 	public:
-		FileWorker(NanCallback *callback, int algo, char* fname)
-		: NanAsyncWorker(callback)
+		FileWorker(Nan::Callback *callback, int algo, char* fname)
+		: Nan::AsyncWorker(callback)
 			, algorithm(algo)
 			, filename(fname)
 		{
@@ -77,11 +77,11 @@ class FileWorker : public NanAsyncWorker
 
 		void HandleOKCallback()
 		{
-			NanScope();
+			Nan::HandleScope();
 			Local<Value> argv[] =
 			{
-				NanNull(),
-				NanNewBufferHandle(hash, length)
+				Nan::Null(),
+				Nan::CopyBuffer(hash, length).ToLocalChecked()
 			};
 			callback->Call(2, argv);
 		};
@@ -97,23 +97,21 @@ class FileWorker : public NanAsyncWorker
 
 NAN_METHOD(HashFile)
 {
-	NanScope();
+	Nan::HandleScope();
 
-	int algo = args[0]->Uint32Value();
-	NanAsciiString* name = new NanAsciiString(args[1]);
-	NanCallback *callback = new NanCallback(args[2].As<Function>());
-	NanAsyncQueueWorker(new FileWorker(callback, algo, **name));
-
-	NanReturnUndefined();
+	int algo = info[0]->Uint32Value();
+	Nan::Utf8String* name = new Nan::Utf8String(info[1]);
+	Nan::Callback *callback = new Nan::Callback(info[2].As<Function>());
+	Nan::AsyncQueueWorker(new FileWorker(callback, algo, **name));
 }
 
 //------ operate on buffers
 
-class BufferWorker : public NanAsyncWorker
+class BufferWorker : public Nan::AsyncWorker
 {
 	public:
-		BufferWorker(int algo, char* buf, size_t bufferLen, NanCallback *callback)
-		: NanAsyncWorker(callback)
+		BufferWorker(int algo, char* buf, size_t bufferLen, Nan::Callback *callback)
+		: Nan::AsyncWorker(callback)
 			, algorithm(algo)
 			, buffer(buf)
 			, bufferLen(bufferLen)
@@ -164,11 +162,11 @@ class BufferWorker : public NanAsyncWorker
 
 		void HandleOKCallback()
 		{
-			NanScope();
+			Nan::HandleScope();
 			Local<Value> argv[] =
 			{
-				NanNull(),
-				NanNewBufferHandle(hash, resultLen)
+				Nan::Null(),
+				Nan::CopyBuffer(hash, resultLen).ToLocalChecked()
 			};
 			callback->Call(2, argv);
 		};
@@ -185,26 +183,30 @@ class BufferWorker : public NanAsyncWorker
 
 NAN_METHOD(HashBuffer)
 {
-	NanScope();
+	Nan::HandleScope();
 
-	int algo = args[0]->Uint32Value();
-	Local<Object> buffer = args[1].As<Object>();
+	int algo = info[0]->Uint32Value();
+	Local<Object> buffer = info[1].As<Object>();
 	size_t length = node::Buffer::Length(buffer);
 	char* data = node::Buffer::Data(buffer);
 
-	NanCallback *callback = new NanCallback(args[2].As<Function>());
-	NanAsyncQueueWorker(new BufferWorker(algo, data, length, callback));
-
-	NanReturnUndefined();
+	Nan::Callback *callback = new Nan::Callback(info[2].As<Function>());
+	Nan::AsyncQueueWorker(new BufferWorker(algo, data, length, callback));
 }
 
 // ------------ ceremony
 
-void InitAll(Handle<Object> exports, Handle<Object> module)
+NAN_MODULE_INIT(InitAll)
 {
-	exports->Set(NanNew<String>("b2_file"), NanNew<FunctionTemplate>(HashFile)->GetFunction());
-	exports->Set(NanNew<String>("b2_buffer"), NanNew<FunctionTemplate>(HashBuffer)->GetFunction());
-	Streamer::Initialize(exports, module);
+	Nan::Set(target,
+		Nan::New<String>("b2_file").ToLocalChecked(),
+    	Nan::GetFunction(Nan::New<FunctionTemplate>(HashFile)).ToLocalChecked()
+	);
+	Nan::Set(target,
+		Nan::New<String>("b2_buffer").ToLocalChecked(),
+    	Nan::GetFunction(Nan::New<FunctionTemplate>(HashBuffer)).ToLocalChecked()
+	);
+	Streamer::Initialize(target);
 }
 
 NODE_MODULE(blake2, InitAll)

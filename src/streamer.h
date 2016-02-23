@@ -8,7 +8,7 @@ class Streamer : public node::ObjectWrap
     public:
         static NAN_METHOD(New);
         Streamer(int algorithm = 0);
-        static void Initialize(v8::Handle<v8::Object> exports, v8::Handle<v8::Object> module);
+        static void Initialize(v8::Handle<v8::Object> target);
         void Update(const void *buffer, size_t length);
         void Final();
         size_t resultLen;

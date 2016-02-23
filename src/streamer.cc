@@ -24,22 +24,25 @@ Streamer::~Streamer()
 {
 }
 
-void Streamer::Initialize(Handle<Object> exports, Handle<Object> module)
+NAN_MODULE_INIT(Streamer::Initialize)
 {
-    Local<FunctionTemplate> t = NanNew<FunctionTemplate>(New);
+    Local<FunctionTemplate> t = Nan::New<FunctionTemplate>(New);
 
-    t->SetClassName(NanNew<String>("Streamer"));
+    t->SetClassName(Nan::New<String>("Streamer").ToLocalChecked());
     t->InstanceTemplate()->SetInternalFieldCount(1);
     NODE_SET_PROTOTYPE_METHOD(t, "update", UpdateB);
     NODE_SET_PROTOTYPE_METHOD(t, "final", FinalB);
 
     NanAssignPersistent<v8::Function>(constructor, t->GetFunction());
-    exports->Set(NanNew<String>("Streamer"), t->GetFunction());
+    Nan::Set(target,
+        Nan::New<String>("Streamer").ToLocalChecked(),
+        Nan::GetFunction(Nan::New<FunctionTemplate>(HashBuffer)).ToLocalChecked()
+    );
 }
 
 NAN_METHOD(Streamer::New)
 {
-    NanScope();
+    Nan::HandleScope();
 
     if (args.IsConstructCall())
     {
@@ -53,31 +56,29 @@ NAN_METHOD(Streamer::New)
     {
         const int argc = 1;
         Local<Value> argv[argc] = { args[0] };
-        Local<Function> cons = NanNew<Function>(constructor);
+        Local<Function> cons = Nan::New<Function>(constructor);
         NanReturnValue(cons->NewInstance(argc, argv));
     }
 }
 
 NAN_METHOD(Streamer::UpdateB)
 {
-    NanScope();
+    Nan::HandleScope();
 
-    Streamer* hash = ObjectWrap::Unwrap<Streamer>(args.Holder());
-	Local<Object> buffer = args[1].As<Object>();
+    Streamer* hash = ObjectWrap::Unwrap<Streamer>(info.Holder());
+	Local<Object> buffer = info[1].As<Object>();
 	size_t length = node::Buffer::Length(buffer);
 	char* data = node::Buffer::Data(buffer);
 
     hash->Update(data, length);
-
-    NanReturnUndefined();
 }
 
 NAN_METHOD(Streamer::FinalB)
 {
-    NanScope();
-    Streamer* hash = ObjectWrap::Unwrap<Streamer>(args.Holder());
+    Nan::HandleScope();
+    Streamer* hash = ObjectWrap::Unwrap<Streamer>(info.Holder());
     hash->Final();
-    NanReturnValue(NanNewBufferHandle((char *)hash->result, hash->resultLen));
+    NanReturnValue(Nan::NewBufferHandle((char *)hash->result, hash->resultLen));
 }
 
 void Streamer::Update(const void *buffer, size_t length)
