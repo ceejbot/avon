@@ -1,14 +1,16 @@
 /*
    BLAKE2 reference source code package - optimized C implementations
-
-   Written in 2012 by Samuel Neves <sneves@dei.uc.pt>
-
-   To the extent possible under law, the author(s) have dedicated all copyright
-   and related and neighboring rights to this software to the public domain
-   worldwide. This software is distributed without any warranty.
-
-   You should have received a copy of the CC0 Public Domain Dedication along with
-   this software. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+  
+   Copyright 2012, Samuel Neves <sneves@dei.uc.pt>.  You may use this under the
+   terms of the CC0, the OpenSSL Licence, or the Apache Public License 2.0, at
+   your option.  The terms of these licenses can be found at:
+  
+   - CC0 1.0 Universal : http://creativecommons.org/publicdomain/zero/1.0
+   - OpenSSL license   : https://www.openssl.org/source/license.html
+   - Apache 2.0        : http://www.apache.org/licenses/LICENSE-2.0
+  
+   More information about the BLAKE2 hash function can be found at
+   https://blake2.net.
 */
 
 #include <stdint.h>
@@ -20,7 +22,9 @@
 
 #include "blake2-config.h"
 
-
+#ifdef _MSC_VER
+#include <intrin.h> /* for _mm_set_epi64x */
+#endif
 #include <emmintrin.h>
 #if defined(HAVE_SSSE3)
 #include <tmmintrin.h>
@@ -37,7 +41,7 @@
 
 #include "blake2b-round.h"
 
-ALIGN( 64 ) static const uint64_t blake2b_IV[8] =
+static const uint64_t blake2b_IV[8] =
 {
   0x6a09e667f3bcc908ULL, 0xbb67ae8584caa73bULL,
   0x3c6ef372fe94f82bULL, 0xa54ff53a5f1d36f1ULL,
@@ -65,13 +69,13 @@ static const uint8_t blake2b_sigma[12][16] =
 /* Some helper functions, not necessarily useful */
 static inline int blake2b_set_lastnode( blake2b_state *S )
 {
-  S->f[1] = ~0ULL;
+  S->f[1] = -1;
   return 0;
 }
 
 static inline int blake2b_clear_lastnode( blake2b_state *S )
 {
-  S->f[1] = 0ULL;
+  S->f[1] = 0;
   return 0;
 }
 
@@ -79,7 +83,7 @@ static inline int blake2b_set_lastblock( blake2b_state *S )
 {
   if( S->last_node ) blake2b_set_lastnode( S );
 
-  S->f[0] = ~0ULL;
+  S->f[0] = -1;
   return 0;
 }
 
@@ -87,7 +91,7 @@ static inline int blake2b_clear_lastblock( blake2b_state *S )
 {
   if( S->last_node ) blake2b_clear_lastnode( S );
 
-  S->f[0] = 0ULL;
+  S->f[0] = 0;
   return 0;
 }
 
@@ -175,11 +179,10 @@ static inline int blake2b_init0( blake2b_state *S )
 /* init xors IV with input parameter block */
 int blake2b_init_param( blake2b_state *S, const blake2b_param *P )
 {
-  uint8_t *p, *h, *v;
   //blake2b_init0( S );
-  v = ( uint8_t * )( blake2b_IV );
-  h = ( uint8_t * )( S->h );
-  p = ( uint8_t * )( P );
+  const uint8_t * v = ( const uint8_t * )( blake2b_IV );
+  const uint8_t * p = ( const uint8_t * )( P );
+  uint8_t * h = ( uint8_t * )( S->h );
   /* IV XOR ParamBlock */
   memset( S, 0, sizeof( blake2b_state ) );
 
@@ -349,6 +352,9 @@ int blake2b_update( blake2b_state *S, const uint8_t *in, uint64_t inlen )
 
 int blake2b_final( blake2b_state *S, uint8_t *out, uint8_t outlen )
 {
+  if( outlen > BLAKE2B_OUTBYTES )
+    return -1;
+
   if( S->buflen > BLAKE2B_BLOCKBYTES )
   {
     blake2b_increment_counter( S, BLAKE2B_BLOCKBYTES );
@@ -371,11 +377,15 @@ int blake2b( uint8_t *out, const void *in, const void *key, const uint8_t outlen
   blake2b_state S[1];
 
   /* Verify parameters */
-  if ( NULL == in ) return -1;
+  if ( NULL == in && inlen > 0 ) return -1;
 
   if ( NULL == out ) return -1;
 
-  if( NULL == key ) keylen = 0;
+  if( NULL == key && keylen > 0 ) return -1;
+
+  if( !outlen || outlen > BLAKE2B_OUTBYTES ) return -1;
+
+  if( keylen > BLAKE2B_KEYBYTES ) return -1;
 
   if( keylen )
   {
@@ -386,7 +396,7 @@ int blake2b( uint8_t *out, const void *in, const void *key, const uint8_t outlen
     if( blake2b_init( S, outlen ) < 0 ) return -1;
   }
 
-  blake2b_update( S, ( uint8_t * )in, inlen );
+  blake2b_update( S, ( const uint8_t * )in, inlen );
   blake2b_final( S, out, outlen );
   return 0;
 }
