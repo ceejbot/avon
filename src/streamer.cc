@@ -41,9 +41,7 @@ NAN_METHOD(Streamer::New)
 	{
 		int algo = info[0]->IsUndefined() ? 0 : Nan::To<int>(info[0]).FromJust();
 		Streamer* obj = new Streamer(algo);
-		HERE();
 		obj->Wrap(info.This());
-		HERE();
 		info.GetReturnValue().Set(info.This());
 	}
 	else

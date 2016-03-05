@@ -26,7 +26,8 @@ describe('blake2 streaming hash', function()
     {
         var streamer = createHash();
         streamer.must.be.an.object();
-        streamer.constructor.name.must.equal('Streamer');
+        streamer.constructor.name.must.equal('StreamingWrap');
+        streamer.must.be.instanceof(createHash.StreamingWrap);
     });
 
     it('implements stream.Writable', function()
@@ -35,18 +36,25 @@ describe('blake2 streaming hash', function()
         streamer.writable.must.be.true();
     });
 
+    it('provides a digest() function', function()
+    {
+        var result = createHash(2);
+        result.must.have.property('digest');
+        result.digest.must.be.a.function();
+    });
+
     it('exposes a native update() function', function()
     {
         var result = createHash(2);
-        result.must.have.property('update');
-        result.update.must.be.a.function();
+        result.hash.must.have.property('update');
+        result.hash.update.must.be.a.function();
     });
 
     it('exposes a native final() function', function()
     {
         var result = createHash(2);
-        result.must.have.property('final');
-        result.final.must.be.a.function();
+        result.hash.must.have.property('final');
+        result.hash.final.must.be.a.function();
     });
 
     it('can hash a file stream correctly', function(done)
@@ -62,5 +70,5 @@ describe('blake2 streaming hash', function()
         });
 
         input.pipe(hasher);
-    })
+    });
 });

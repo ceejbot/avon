@@ -7,26 +7,29 @@ var
 
 var B = 0, BP = 1, S = 2, SP = 3;
 
-function createHash(algorithm)
+function createStreamingHash(algorithm)
 {
-    algorithm = algorithm || 0;
-	var result = new blake2.Streamer(algorithm);
-    stream.Writable.call(result);
-    return result;
+    return new StreamingWrap();
 }
-util.inherits(blake2.Streamer, stream.Writable);
 
-blake2.Streamer.prototype._write = function(data, encoding, callback)
+function StreamingWrap(opts)
 {
-    this.update(data);
+    this.hash = new blake2.Streamer();
+    stream.Writable.call(this, opts);
+}
+util.inherits(StreamingWrap, stream.Writable);
+
+StreamingWrap.prototype._write = function(data, encoding, callback)
+{
+    this.hash.update(data);
     callback();
 };
 
-blake2.Streamer.prototype.digest = function(type)
+StreamingWrap.prototype.digest = function(type)
 {
-    var buf = this.final();
+    var buf = this.hash.final();
     return buf.toString(type ? type : 'hex');
 };
 
-
-module.exports = createHash;
+module.exports = createStreamingHash;
+createStreamingHash.StreamingWrap = StreamingWrap;
