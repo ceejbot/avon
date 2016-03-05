@@ -1,7 +1,7 @@
 var
-    bindings = require('bindings'),
-    blake2   = bindings('blake2'),
-    P        = require('bluebird')
+	bindings = require('bindings'),
+	blake2   = bindings('blake2'),
+	P        = require('p-promise')
 	;
 
 var B = 0, BP = 1, S = 2, SP = 3;
@@ -29,12 +29,12 @@ function wrapper(algo, input)
 
 function blake2b(input)
 {
-	return wrapper(B, input)
+	return wrapper(B, input);
 }
 
 function blake2bp(input, callback)
 {
-	return wrapper(BP, input)
+	return wrapper(BP, input);
 }
 
 function blake2s(input, callback)
@@ -47,17 +47,11 @@ function blake2sp(input, callback)
 	return wrapper(SP, input);
 }
 
-function createStreamingHash(algo)
-{
-	// TODO
-	return blake2.b2_stream(algo);
-}
-
 module.exports =
 {
-	blake2b  : function(input, callback) { return blake2b(input).nodeify(callback) },
-	blake2bp : function(input, callback) { return blake2bp(input).nodeify(callback) },
-	blake2s  : function(input, callback) { return blake2s(input).nodeify(callback) },
-	blake2sp : function(input, callback) { return blake2sp(input).nodeify(callback) },
+	blake2b  : function(input, callback) { return blake2b(input).nodeify(callback); },
+	blake2bp : function(input, callback) { return blake2bp(input).nodeify(callback); },
+	blake2s  : function(input, callback) { return blake2s(input).nodeify(callback); },
+	blake2sp : function(input, callback) { return blake2sp(input).nodeify(callback); },
 	streaming: require('./streaming')
 };

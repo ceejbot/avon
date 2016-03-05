@@ -1,12 +1,12 @@
-/*global describe:true, it:true, beforeEach: true, afterEach:true */
+/*global before:true describe:true, it:true, beforeEach: true, afterEach:true */
 'use strict';
 
 var
-    demand = require('must'),
+	demand = require('must'),
 	fs        = require('fs'),
 	path      = require('path'),
 	Blake2    = require('../index')
-    ;
+	;
 
 var correct2B = '7eb5d436ac77cb137329e74074501e484f4a9ed15f32b4be56842a8f285ebe4989cf89dd3794a8aee56e5964f3f5cd07f1b019611ce724141fd2a4b245d0d1a0';
 var testp = path.resolve(__dirname, './test.png');
@@ -55,7 +55,7 @@ describe('blake2', function()
 
 		it('all four functions invoke a callback if provided', function(done)
 		{
-			Blake2.blake2sp(testp, function(err, callback)
+			Blake2.blake2sp(testp, function(ignored, callback)
 			{
 				// we got here!
 				done();
@@ -76,7 +76,7 @@ describe('blake2', function()
 				err.must.match(/Could not open file to hash./);
 				done();
 			});
-		})
+		});
 
 		it('hashes a file', function(done)
 		{
@@ -110,15 +110,25 @@ describe('blake2', function()
 			});
 		});
 
-        it('hashes a buffer correctly', function(done)
-        {
+		it('hashes a buffer correctly', function(done)
+		{
 			Blake2.blake2b(testbuffer, function(err, hash)
 			{
 				demand(err).not.exist();
 				hash.toString('hex').must.equal(correct2B);
 				done();
 			});
-        });
+		});
+
+		it('the promise version works too', function(done)
+		{
+			Blake2.blake2b(testbuffer)
+			.then(function(hash)
+			{
+				hash.toString('hex').must.equal(correct2B);
+				done();
+			}).done();
+		});
 	});
 
 	describe('blake2bp', function()
