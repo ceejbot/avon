@@ -9,8 +9,7 @@ Blake2 provides four different hashing functions:
 
 All four algorithms are different & will produce different sums. Choose the one that's appropriate for your use.
 
-[![Build Status](http://img.shields.io/travis/ceejbot/avon/master.svg?style=flat)](http://travis-ci.org/ceejbot/avon)
-![Coverage](http://img.shields.io/badge/coverage-100%25-green.svg?style=flat)
+[![on npm](https://img.shields.io/npm/v/avon.svg?style=flat)](https://www.npmjs.com/package/avon) [![Build Status](https://img.shields.io/travis/ceejbot/avon/master.svg?style=flat)](https://travis-ci.org/ceejbot/avon) ![Coverage](https://img.shields.io/badge/coverage-100%25-green.svg?style=flat)
 
 ## Usage
 
@@ -59,9 +58,28 @@ Avon.blake2bp('my_file.dat', function(err, buffer)
 })
 ```
 
+## Streams!
+
+The blake2b algorithm is exposed with a streaming interface.
+
+```js
+var Avon = require('avon');
+
+var input = fs.createReadStream('my-large-file');
+var hasher = Avon.streaming();
+
+input.on('close', function()
+{
+	var digest = hasher.digest('hex');
+	digest.must.equal(correct2B);
+	done();
+});
+
+input.pipe(hasher);
+```
+
 ## TODO
 
-- See about stream input.
 - BREAK THE API and provide file-specific functions so we can handle strings.
 - Refactor `blake2.cpp` to simplify.
 

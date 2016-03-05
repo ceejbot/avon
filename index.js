@@ -59,4 +59,5 @@ module.exports =
 	blake2bp : function(input, callback) { return blake2bp(input).nodeify(callback) },
 	blake2s  : function(input, callback) { return blake2s(input).nodeify(callback) },
 	blake2sp : function(input, callback) { return blake2sp(input).nodeify(callback) },
+	streaming: require('./streaming')
 };

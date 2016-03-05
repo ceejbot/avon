@@ -9,6 +9,7 @@ var B = 0, BP = 1, S = 2, SP = 3;
 
 function createHash(algorithm)
 {
+    algorithm = algorithm || 0;
 	var result = new blake2.Streamer(algorithm);
     stream.Writable.call(result);
     return result;
