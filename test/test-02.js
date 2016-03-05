@@ -24,7 +24,12 @@ describe('blake2 streaming hash', function()
         done();
     });
 
-    it('implements stream.Writable');
+    it('implements stream.Writable', function()
+    {
+        var streamer = createHash(2);
+        streamer.must.have.property('update');
+        streamer.update.must.be.a.function();
+    });
 
     it('exposes a native update() function', function(done)
     {

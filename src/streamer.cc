@@ -45,7 +45,6 @@ NAN_METHOD(Streamer::New)
 		int algo = info[0]->Uint32Value();
 		Streamer* obj = new Streamer(algo);
 		obj->Wrap(info.This());
-		printf("wrapped\n");
 		info.GetReturnValue().Set(info.This());
 	}
 	else
@@ -64,17 +63,21 @@ NAN_METHOD(Streamer::UpdateB)
 	Streamer* hash = ObjectWrap::Unwrap<Streamer>(info.Holder());
 	Local<Object> buffer = info[1].As<Object>();
 	size_t length = node::Buffer::Length(buffer);
+	HERE();
 	char* data = node::Buffer::Data(buffer);
-
+	HERE();
 	hash->Update(data, length);
 }
 
 NAN_METHOD(Streamer::FinalB)
 {
 	Nan::HandleScope();
+	HERE();
 	Streamer* hash = ObjectWrap::Unwrap<Streamer>(info.Holder());
 	hash->Final();
+	HERE();
 	info.GetReturnValue().Set(Nan::CopyBuffer((const char *)hash->result, hash->resultLen).ToLocalChecked());
+	HERE();
 }
 
 void Streamer::Update(const void *buffer, size_t length)

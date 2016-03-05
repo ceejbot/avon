@@ -34,7 +34,6 @@
   },
   "scripts": {
     "build": "node-gyp build",
-    "install": "node-gyp rebuild",
     "test": "mocha -R spec test",
     "travis": "npm test"
   }

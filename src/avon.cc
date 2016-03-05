@@ -23,7 +23,6 @@ class FileWorker : public Nan::AsyncWorker
 
 		~FileWorker()
 		{
-			delete [] filename;
 		}
 
 		void Execute()
