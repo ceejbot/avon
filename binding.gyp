@@ -6,7 +6,8 @@
 			"sources":
 			[
 				"src/avon.cc",
-				"src/sumbuffer.c",
+				"src/buffers.c",
+				"src/streamer.cc",
 				"blake2_code_20140114/b2sum/b2sum.c",
 				"blake2_code_20140114/sse/blake2b.c",
 				"blake2_code_20140114/sse/blake2bp.c",

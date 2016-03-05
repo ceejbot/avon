@@ -6,7 +6,6 @@ configure:
 	@node-gyp configure
 
 compile: configure
-	node-gyp build
 	npm install .
 
 test: build

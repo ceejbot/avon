@@ -8,12 +8,13 @@
   },
   "dependencies": {
     "bindings": "^1.2.1",
-    "bluebird": "^1.2.3",
-    "nan": "~1.2.0"
+    "bluebird": "~3.3.1",
+    "nan": "~2.2.0",
+    "readable-stream": "~2.0.5"
   },
   "devDependencies": {
-    "lab": "^3.2.1",
-    "must": "^0.12.0"
+    "mocha": "~2.4.5",
+    "must": "~0.13.1"
   },
   "directories": {
     "test": "test"
@@ -22,8 +23,8 @@
   "homepage": "https://github.com/ceejbot/avon",
   "keywords": [
     "blake2",
-    "hash",
-    "cryptographic hash"
+    "cryptographic hash",
+    "hash"
   ],
   "license": "ISC",
   "main": "index.js",
@@ -33,7 +34,7 @@
   },
   "scripts": {
     "build": "node-gyp build",
-    "test": "lab -v -c -t 90 test/test*.js",
-    "install": "node-gyp rebuild"
+    "test": "mocha -R spec test",
+    "travis": "npm test"
   }
 }

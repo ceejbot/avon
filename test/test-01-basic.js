@@ -1,15 +1,11 @@
+/*global describe:true, it:true, beforeEach: true, afterEach:true */
 'use strict';
 
 var
-    lab      = require('lab'),
-    before   = lab.before,
-    after    = lab.after,
-    describe = lab.describe,
-    it       = lab.it,
-    demand   = require('must'),
-    fs       = require('fs'),
-    path     = require('path'),
-    Blake2   = require('../index')
+    demand = require('must'),
+	fs        = require('fs'),
+	path      = require('path'),
+	Blake2    = require('../index')
     ;
 
 var correct2B = '7eb5d436ac77cb137329e74074501e484f4a9ed15f32b4be56842a8f285ebe4989cf89dd3794a8aee56e5964f3f5cd07f1b019611ce724141fd2a4b245d0d1a0';
@@ -220,7 +216,7 @@ describe('blake2', function()
 
 		it('responds with an error when given an unknown hash type', function(done)
 		{
-			var b2Buffer = require('../build/Release/blake2').blake2_buffer;
+			var b2Buffer = require('../build/Release/blake2').b2_buffer;
 			b2Buffer(17, new Buffer('that does not exist'), function(err, result)
 			{
 				err.must.be.instanceof(Error);

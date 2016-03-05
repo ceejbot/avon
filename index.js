@@ -4,15 +4,15 @@ var
     P        = require('bluebird')
 	;
 
-const B = 0, BP = 1, S = 2, SP = 3;
+var B = 0, BP = 1, S = 2, SP = 3;
 
 function wrapper(algo, input)
 {
 	var func;
 	if (Buffer.isBuffer(input))
-		func = blake2.blake2_buffer;
+		func = blake2.b2_buffer;
 	else if (typeof input === 'string')
-		func = blake2.blake2_file;
+		func = blake2.b2_file;
 	else
 		return P.reject(new Error('You must pass either a buffer or a filename as input.'));
 
@@ -47,10 +47,17 @@ function blake2sp(input, callback)
 	return wrapper(SP, input);
 }
 
+function createStreamingHash(algo)
+{
+	// TODO
+	return blake2.b2_stream(algo);
+}
+
 module.exports =
 {
 	blake2b  : function(input, callback) { return blake2b(input).nodeify(callback) },
 	blake2bp : function(input, callback) { return blake2bp(input).nodeify(callback) },
 	blake2s  : function(input, callback) { return blake2s(input).nodeify(callback) },
 	blake2sp : function(input, callback) { return blake2sp(input).nodeify(callback) },
+	streaming: require('./streaming')
 };
