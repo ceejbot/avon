@@ -14,7 +14,8 @@
   },
   "devDependencies": {
     "mocha": "~2.4.5",
-    "must": "~0.13.1"
+    "must": "~0.13.1",
+    "nyc": "~6.0.0"
   },
   "directories": {
     "test": "test"
@@ -34,7 +35,8 @@
   },
   "scripts": {
     "build": "node-gyp build",
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
     "test": "mocha -R spec test",
-    "travis": "npm test"
+    "travis": "nyc mocha -R spec test && npm run coverage"
   }
 }
