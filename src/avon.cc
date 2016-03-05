@@ -200,11 +200,11 @@ NAN_MODULE_INIT(InitAll)
 {
 	Nan::Set(target,
 		Nan::New<String>("b2_file").ToLocalChecked(),
-    	Nan::GetFunction(Nan::New<FunctionTemplate>(HashFile)).ToLocalChecked()
+		Nan::GetFunction(Nan::New<FunctionTemplate>(HashFile)).ToLocalChecked()
 	);
 	Nan::Set(target,
 		Nan::New<String>("b2_buffer").ToLocalChecked(),
-    	Nan::GetFunction(Nan::New<FunctionTemplate>(HashBuffer)).ToLocalChecked()
+		Nan::GetFunction(Nan::New<FunctionTemplate>(HashBuffer)).ToLocalChecked()
 	);
 	Streamer::Initialize(target);
 }
