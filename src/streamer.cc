@@ -26,7 +26,7 @@ NAN_MODULE_INIT(Streamer::Initialize)
 	v8::Local<v8::FunctionTemplate> t = Nan::New<v8::FunctionTemplate>(New);
 
 	t->SetClassName(Nan::New<String>("Streamer").ToLocalChecked());
-	t->InstanceTemplate()->SetInternalFieldCount(1);
+	t->InstanceTemplate()->SetInternalFieldCount(2);
 
 	Nan::SetPrototypeMethod(t, "update", UpdateB);
 	Nan::SetPrototypeMethod(t, "final", FinalB);
@@ -37,13 +37,13 @@ NAN_MODULE_INIT(Streamer::Initialize)
 
 NAN_METHOD(Streamer::New)
 {
-	Nan::HandleScope();
-
 	if (info.IsConstructCall())
 	{
-		int algo = info[0]->Uint32Value();
+		int algo = info[0]->IsUndefined() ? 0 : Nan::To<int>(info[0]).FromJust();
 		Streamer* obj = new Streamer(algo);
+		HERE();
 		obj->Wrap(info.This());
+		HERE();
 		info.GetReturnValue().Set(info.This());
 	}
 	else
@@ -57,8 +57,6 @@ NAN_METHOD(Streamer::New)
 
 NAN_METHOD(Streamer::UpdateB)
 {
-	Nan::HandleScope();
-
 	Streamer* hash = ObjectWrap::Unwrap<Streamer>(info.Holder());
 	Local<Object> buffer = info[0].As<Object>();
 	size_t length = node::Buffer::Length(buffer);
@@ -68,7 +66,6 @@ NAN_METHOD(Streamer::UpdateB)
 
 NAN_METHOD(Streamer::FinalB)
 {
-	Nan::HandleScope();
 	Streamer* hash = ObjectWrap::Unwrap<Streamer>(info.Holder());
 	hash->Final();
 	info.GetReturnValue().Set(Nan::CopyBuffer((const char *)hash->mResult, hash->mLength).ToLocalChecked());

@@ -13,6 +13,9 @@ class Streamer : public node::ObjectWrap
 		Streamer(int algorithm = 0);
 		void Update(const void *buffer, size_t length);
 		void Final();
+		size_t mLength;
+		// The 2S hashes emit 32 bytes instead of 64, so we get away with this size.
+		unsigned char mResult[BLAKE2B_OUTBYTES];
 
 	private:
 		~Streamer();
@@ -27,9 +30,6 @@ class Streamer : public node::ObjectWrap
 		}
 
 		blake2b_state state[1];
-		size_t mLength;
-		// The 2S hashes emit 32 bytes instead of 64, so we get away with this size.
-		unsigned char mResult[BLAKE2B_OUTBYTES];
 };
 
 #endif
