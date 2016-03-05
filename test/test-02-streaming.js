@@ -68,4 +68,12 @@ describe('blake2 streaming hash', function()
 
 		input.pipe(hasher);
 	});
+
+	it('throws if you attempt to update a finalized hash', function()
+	{
+		var hash = createHash();
+		hash.digest('hex');
+		function shouldThrow() { hash.write(new Buffer('hello')); }
+		shouldThrow.must.throw(/finalized/);
+	});
 });

@@ -9,7 +9,9 @@ Blake2 provides four different hashing functions:
 
 All four algorithms are different & will produce different sums. Choose the one that's appropriate for your use.
 
-[![on npm](https://img.shields.io/npm/v/avon.svg?style=flat)](https://www.npmjs.com/package/avon) [![Build Status](https://img.shields.io/travis/ceejbot/avon/master.svg?style=flat)](https://travis-ci.org/ceejbot/avon) ![Coverage](https://img.shields.io/badge/coverage-100%25-green.svg?style=flat)
+[![on npm](https://img.shields.io/npm/v/avon.svg?style=flat)](https://www.npmjs.com/package/avon) [![Build Status](http://img.shields.io/travis/ceejbot/avon/master.svg?style=flat)](https://travis-ci.org/ceejbot/avon) ![Coverage](https://img.shields.io/badge/coverage-100%25-green.svg?style=flat)
+
+Tested on node 0.10, 4.x, and 5.x.
 
 ## Usage
 
@@ -71,8 +73,8 @@ var hasher = Avon.streaming();
 input.on('close', function()
 {
 	var digest = hasher.digest('hex');
-	digest.must.equal(correct2B);
-	done();
+	// you now have a string with the final hash digest
+	// the hash is unusable from here on
 });
 
 input.pipe(hasher);
@@ -80,13 +82,14 @@ input.pipe(hasher);
 
 ## TODO
 
+- Provide the other algorithms in streaming form.
 - BREAK THE API and provide file-specific functions so we can handle strings.
 - Refactor `blake2.cpp` to simplify.
 
 ## Notes
 
-V8 bindings made considerably easier thanks to rvagg's [NAN](https://github.com/rvagg/nan).
+V8 bindings made considerably easier thanks to [NAN](https://github.com/nodejs/nan).
 
 ## License
 
-ICS.
+ISC.
