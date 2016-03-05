@@ -96,8 +96,6 @@ class FileWorker : public Nan::AsyncWorker
 
 NAN_METHOD(HashFile)
 {
-	Nan::HandleScope();
-
 	int algo = info[0]->Uint32Value();
 	Nan::Utf8String* name = new Nan::Utf8String(info[1]);
 	Nan::Callback *callback = new Nan::Callback(info[2].As<Function>());
@@ -161,7 +159,6 @@ class BufferWorker : public Nan::AsyncWorker
 
 		void HandleOKCallback()
 		{
-			Nan::HandleScope();
 			Local<Value> argv[] =
 			{
 				Nan::Null(),
@@ -182,8 +179,6 @@ class BufferWorker : public Nan::AsyncWorker
 
 NAN_METHOD(HashBuffer)
 {
-	Nan::HandleScope();
-
 	int algo = info[0]->Uint32Value();
 	Local<Object> buffer = info[1].As<Object>();
 	size_t length = node::Buffer::Length(buffer);
