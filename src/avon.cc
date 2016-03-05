@@ -115,9 +115,7 @@ class BufferWorker : public Nan::AsyncWorker
 		{
 		}
 
-		~BufferWorker()
-		{
-		}
+		~BufferWorker() { }
 
 		void Execute()
 		{

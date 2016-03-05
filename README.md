@@ -23,7 +23,7 @@ var assert = require('assert');
 
 var buf = new Buffer('this is some input');
 
-Avon.blake2b(buf)
+Avon.sumBuffer(buf)
 .then(function(hash)
 {
 	assert(hash instanceof Buffer);
@@ -33,17 +33,17 @@ Avon.blake2b(buf)
 	console.error('noooooo! ' + err.message);
 }).done();
 
-Avon.blake2bp(buf, function(err, buffer)
+Avon.sumBuffer(buf, function(err, buffer)
 {
 	if (err) console.error('noooo!');
 	else console.log(buffer.toString('hex'))
 })
 ```
 
-The functions can also take a filename input:
+There are variations that take a filename as input:
 
 ```javascript
-Avon.blake2b('my_file.dat')
+Avon.sumFile('my_file.dat')
 .then(function(hash)
 {
 	assert(hash instanceof Buffer);
@@ -53,7 +53,7 @@ Avon.blake2b('my_file.dat')
 	console.error('noooooo! ' + err.message);
 }).done();
 
-Avon.blake2bp('my_file.dat', function(err, buffer)
+Avon.sumFile('my_file.dat', function(err, buffer)
 {
 	if (err) console.error('noooo!');
 	else console.log(buffer.toString('hex'))
@@ -62,13 +62,13 @@ Avon.blake2bp('my_file.dat', function(err, buffer)
 
 ## Streams!
 
-The blake2b algorithm is exposed with a streaming interface.
+The blake2 64-bit single core (aka blake2 b) algorithm is exposed with a streaming interface.
 
 ```js
 var Avon = require('avon');
 
 var input = fs.createReadStream('my-large-file');
-var hasher = Avon.streaming();
+var hasher = Avon.sumStream();
 
 input.on('close', function()
 {
@@ -80,11 +80,28 @@ input.on('close', function()
 input.pipe(hasher);
 ```
 
+## API
+
+The following function are exported. This chart might help you decide which to use.
+
+| function | input | arch | multicore? | blake name
+| --- | --- | --- | --- | ---
+| sumStream | stream | 64 | n | blake 2b
+| sumBuffer | buffer | 64 | n | alias for blake2()
+| sumFile | file | 64 | n | alias for blake2File()
+| blake2  | buffer | 64 | n | 2b
+| blake2SMP  | buffer | 64 | y | 2bp
+| blake2_32  | buffer | 32 | n | 2s
+| blake2_32SMP  | buffer | 32 | y | 2sp
+| blake2File | file | 64 | n | 2b
+| blake2SMPFile | file | 64 | y | 2bp
+| blake2_32File | file | 32 | n | 2s
+| blake2_32SMPFile | file | 32 | y | 2sp
+
+
 ## TODO
 
 - Provide the other algorithms in streaming form.
-- BREAK THE API and provide file-specific functions so we can handle strings.
-- Refactor `blake2.cpp` to simplify.
 
 ## Notes
 

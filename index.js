@@ -6,19 +6,14 @@ var
 
 var B = 0, BP = 1, S = 2, SP = 3;
 
-function wrapper(algo, input)
+function wrapper(algo, buffer)
 {
-	var func;
-	if (Buffer.isBuffer(input))
-		func = blake2.b2_buffer;
-	else if (typeof input === 'string')
-		func = blake2.b2_file;
-	else
-		return P.reject(new Error('You must pass either a buffer or a filename as input.'));
+	if (!Buffer.isBuffer(buffer))
+		return P.reject(new Error('You must pass a buffer as input.'));
 
 	var deferred = P.defer();
 
-	func(algo, input, function(err, result)
+	blake2.b2_buffer(algo, buffer, function(err, result)
 	{
 		if (err) deferred.reject(err);
 		else deferred.resolve(result);
@@ -27,31 +22,37 @@ function wrapper(algo, input)
 	return deferred.promise;
 }
 
-function blake2b(input)
+function wrapperFile(algo, fname)
 {
-	return wrapper(B, input);
+	if (typeof fname !== 'string')
+		return P.reject(new Error('You must pass a string filename as input.'));
+
+	var deferred = P.defer();
+
+	blake2.b2_file(algo, fname, function(err, result)
+	{
+		if (err) deferred.reject(err);
+		else deferred.resolve(result);
+	});
+
+	return deferred.promise;
 }
 
-function blake2bp(input, callback)
-{
-	return wrapper(BP, input);
-}
-
-function blake2s(input, callback)
-{
-	return wrapper(S, input);
-}
-
-function blake2sp(input, callback)
-{
-	return wrapper(SP, input);
-}
+// blake2bp - multicore, 64
 
 module.exports =
 {
-	blake2b  : function(input, callback) { return blake2b(input).nodeify(callback); },
-	blake2bp : function(input, callback) { return blake2bp(input).nodeify(callback); },
-	blake2s  : function(input, callback) { return blake2s(input).nodeify(callback); },
-	blake2sp : function(input, callback) { return blake2sp(input).nodeify(callback); },
-	streaming: require('./streaming')
+	blake2:           function(buffer, callback) { return wrapper(B, buffer).nodeify(callback); },
+	blake2SMP:        function(buffer, callback) { return wrapper(BP, buffer).nodeify(callback); },
+	blake2_32:        function(buffer, callback) { return wrapper(S, buffer).nodeify(callback); },
+	blake2_32SMP:     function(buffer, callback) { return wrapper(SP, buffer).nodeify(callback); },
+	blake2File:       function(fname, callback) { return wrapperFile(B, fname).nodeify(callback); },
+	blake2SMPFile:    function(fname, callback) { return wrapperFile(BP, fname).nodeify(callback); },
+	blake2_32File:    function(fname, callback) { return wrapperFile(S, fname).nodeify(callback); },
+	blake2_32SMPFile: function(fname, callback) { return wrapperFile(SP, fname).nodeify(callback); },
+	sumStream:        require('./streaming')
 };
+
+// Aliases for the most common.
+module.exports.sumBuffer = module.exports.blake2;
+module.exports.sumFile = module.exports.blake2File;

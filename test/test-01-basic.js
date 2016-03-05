@@ -26,25 +26,23 @@ describe('blake2', function()
 
 	describe('core', function()
 	{
-		it('exports four hash functions', function(done)
+		it('exports eight hash functions', function()
 		{
 			Blake2.must.be.an.object();
-			Blake2.blake2b.must.exist();
-			Blake2.blake2b.must.be.a.function();
-			Blake2.blake2bp.must.exist();
-			Blake2.blake2bp.must.be.a.function();
-			Blake2.blake2s.must.exist();
-			Blake2.blake2s.must.be.a.function();
-			Blake2.blake2sp.must.exist();
-			Blake2.blake2sp.must.be.a.function();
-
-			done();
+			var funcs = Object.keys(Blake2);
+			funcs.length.must.be.above(8);
+			for (var i = 0; i < funcs.length; i++)
+			{
+				Blake2[funcs[i]].must.be.a.function();
+			}
 		});
 
-		it('all four functions return promises if called sans callback', function(done)
+		it('all functions return promises if called sans callback', function(done)
 		{
-			['blake2b', 'blake2bp', 'blake2s', 'blake2sp'].forEach(function(f)
+			var funcs = Object.keys(Blake2);
+			funcs.forEach(function(f)
 			{
+				if (f === 'sumStream') return; // the one exception
 				var res = Blake2[f](testp);
 				res.must.be.an.object();
 				res.must.have.property('then');
@@ -55,7 +53,7 @@ describe('blake2', function()
 
 		it('all four functions invoke a callback if provided', function(done)
 		{
-			Blake2.blake2sp(testp, function(ignored, callback)
+			Blake2.blake2_32SMP(testp, function(ignored, callback)
 			{
 				// we got here!
 				done();
@@ -63,13 +61,46 @@ describe('blake2', function()
 		});
 	});
 
-	describe('blake2b', function()
+	describe('blake2 64-bit single core', function()
+	{
+		it('is aliased as sumBuffer', function()
+		{
+			Blake2.blake2.must.equal(Blake2.sumBuffer);
+		});
+
+		it('hashes a buffer correctly', function(done)
+		{
+			Blake2.blake2(testbuffer, function(err, hash)
+			{
+				demand(err).not.exist();
+				hash.toString('hex').must.equal(correct2B);
+				done();
+			});
+		});
+
+		it('the promise version works too', function(done)
+		{
+			Blake2.blake2(testbuffer)
+			.then(function(hash)
+			{
+				hash.toString('hex').must.equal(correct2B);
+				done();
+			}).done();
+		});
+	});
+
+	describe('blake2File 64-bit single core', function()
 	{
 		var first;
 
+		it('is aliased as sumFile', function()
+		{
+			Blake2.blake2File.must.equal(Blake2.sumFile);
+		});
+
 		it('returns an error if it cannot find target file', function(done)
 		{
-			Blake2.blake2b('idontexist.js', function(err, hash)
+			Blake2.blake2File('idontexist.js', function(err, hash)
 			{
 				err.must.exist();
 				err.must.be.an.object();
@@ -80,7 +111,7 @@ describe('blake2', function()
 
 		it('hashes a file', function(done)
 		{
-			Blake2.blake2b(testp, function(err, hash)
+			Blake2.blake2File(testp, function(err, hash)
 			{
 				demand(err).not.exist();
 				hash.must.be.instanceof(Buffer);
@@ -92,7 +123,7 @@ describe('blake2', function()
 
 		it('hashes correctly', function(done)
 		{
-			Blake2.blake2b(testp, function(err, hash)
+			Blake2.blake2File(testp, function(err, hash)
 			{
 				demand(err).not.exist();
 				hash.toString('hex').must.equal(correct2B);
@@ -102,42 +133,22 @@ describe('blake2', function()
 
 		it('hashes to the same value when run twice', function(done)
 		{
-			Blake2.blake2b(testp, function(err, hash)
+			Blake2.blake2File(testp, function(err, hash)
 			{
 				demand(err).not.exist();
 				hash.toString('hex').must.equal(first);
 				done();
 			});
 		});
-
-		it('hashes a buffer correctly', function(done)
-		{
-			Blake2.blake2b(testbuffer, function(err, hash)
-			{
-				demand(err).not.exist();
-				hash.toString('hex').must.equal(correct2B);
-				done();
-			});
-		});
-
-		it('the promise version works too', function(done)
-		{
-			Blake2.blake2b(testbuffer)
-			.then(function(hash)
-			{
-				hash.toString('hex').must.equal(correct2B);
-				done();
-			}).done();
-		});
 	});
 
-	describe('blake2bp', function()
+	describe('blake2 64-bit multicore', function()
 	{
 		var result;
 
 		it('hashes a file', function(done)
 		{
-			Blake2.blake2bp(testp)
+			Blake2.blake2SMPFile(testp)
 			.then(function(hash)
 			{
 				hash.must.be.instanceof(Buffer);
@@ -149,7 +160,7 @@ describe('blake2', function()
 
 		it('hashes a buffer', function(done)
 		{
-			Blake2.blake2bp(testbuffer, function(err, hash)
+			Blake2.blake2SMP(testbuffer, function(err, hash)
 			{
 				demand(err).not.exist();
 				hash.toString('hex').must.equal(result);
@@ -158,13 +169,13 @@ describe('blake2', function()
 		});
 	});
 
-	describe('blake2s', function()
+	describe('blake2 32-bit single core', function()
 	{
 		var result;
 
 		it('hashes a file', function(done)
 		{
-			Blake2.blake2s(testp)
+			Blake2.blake2_32File(testp)
 			.then(function(hash)
 			{
 				hash.must.be.instanceof(Buffer);
@@ -176,7 +187,7 @@ describe('blake2', function()
 
 		it('hashes a buffer', function(done)
 		{
-			Blake2.blake2s(testbuffer)
+			Blake2.blake2_32(testbuffer)
 			.then(function(hash)
 			{
 				hash.toString('hex').must.equal(result);
@@ -185,13 +196,13 @@ describe('blake2', function()
 		});
 	});
 
-	describe('blake2sp', function()
+	describe('blake2 32-bit multicore', function()
 	{
 		var result;
 
 		it('hashes a file', function(done)
 		{
-			Blake2.blake2sp(testp)
+			Blake2.blake2_32SMPFile(testp)
 			.then(function(hash)
 			{
 				hash.must.be.instanceof(Buffer);
@@ -203,7 +214,7 @@ describe('blake2', function()
 
 		it('hashes a buffer', function(done)
 		{
-			Blake2.blake2sp(testbuffer)
+			Blake2.blake2_32SMP(testbuffer)
 			.then(function(hash)
 			{
 				hash.toString('hex').must.equal(result);
@@ -216,7 +227,7 @@ describe('blake2', function()
 	{
 		it('responds with an error when asked to hash file that doesn\'t exist', function(done)
 		{
-			Blake2.blake2sp('idonotexist.jpg', function(err, hash)
+			Blake2.blake2_32SMPFile('idonotexist.jpg', function(err, hash)
 			{
 				err.must.be.instanceof(Error);
 				err.message.must.equal('Could not open file to hash.');
@@ -235,12 +246,22 @@ describe('blake2', function()
 			});
 		});
 
-		it('responds with an error if you pass a non-string or buffer', function(done)
+		it('buffer summers respond with an error if you pass a non-string', function(done)
 		{
-			Blake2.blake2sp({ foo: 'bar' }, function(err, hash)
+			Blake2.sumBuffer({ foo: 'bar' }, function(err, hash)
 			{
 				err.must.be.instanceof(Error);
-				err.message.must.equal('You must pass either a buffer or a filename as input.');
+				err.message.must.equal('You must pass a buffer as input.');
+				done();
+			});
+		});
+
+		it('file summers respond with an error if you pass a non-string', function(done)
+		{
+			Blake2.sumFile(new Buffer('whatever'), function(err, hash)
+			{
+				err.must.be.instanceof(Error);
+				err.message.must.equal('You must pass a string filename as input.');
 				done();
 			});
 		});
