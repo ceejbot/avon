@@ -246,7 +246,7 @@ describe('blake2', function()
 			});
 		});
 
-		it('buffer summers respond with an error if you pass a non-string', function(done)
+		it('buffer summers respond with an error if you pass a non-buffer', function(done)
 		{
 			Blake2.sumBuffer({ foo: 'bar' }, function(err, hash)
 			{
