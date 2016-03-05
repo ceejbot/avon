@@ -13,6 +13,7 @@
     "readable-stream": "~2.0.5"
   },
   "devDependencies": {
+    "coveralls": "~2.11.8",
     "mocha": "~2.4.5",
     "must": "~0.13.1",
     "nyc": "~6.0.0"
