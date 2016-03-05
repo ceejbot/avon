@@ -66,7 +66,7 @@ class FileWorker : public Nan::AsyncWorker
 				return;
 			}
 
-			if (streamFunc(f, hash) < 0)
+			if (streamFunc(f, hash, length) < 0)
 			{
 				SetErrorMessage("Failed to calculate hash.");
 				return;
