@@ -15,7 +15,7 @@ Tested on node 0.10, 4.x, and 5.x.
 
 ## Usage
 
-All four functions take an optional callback. If no callback is provided, they return promises. Use the flow control method you prefer! The calculated hash is a node Buffer.
+All four functions take an optional callback. If no callback is provided, they return promises. Use the control flow method you prefer! The calculated hash is a node Buffer.
 
 ```javascript
 var Avon = require('avon');
