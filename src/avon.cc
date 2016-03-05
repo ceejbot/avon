@@ -4,6 +4,7 @@
 
 #include "blake2.h"
 #include "avon.h"
+#include "streamer.h"
 
 #define HERE() ({fprintf(stderr, "@%d\n", __LINE__);})
 
@@ -89,8 +90,7 @@ class FileWorker : public Nan::AsyncWorker
 		int algorithm;
 		char* filename;
 		size_t length;
-		// The 2S hashes emit 32 bytes instead of 64, so we get away with
-		// this size.
+		// The 2S hashes emit 32 bytes instead of 64, so we get away with this size.
 		char hash[BLAKE2B_OUTBYTES];
 };
 

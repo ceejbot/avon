@@ -9,9 +9,7 @@ var B = 0, BP = 1, S = 2, SP = 3;
 
 function createHash(algorithm)
 {
-	// TODO algorithm is ignored right now
-	var result = new blake2.Streamer(B);
-    console.log('constructed');
+	var result = new blake2.Streamer(algorithm);
     stream.Writable.call(result);
     return result;
 }

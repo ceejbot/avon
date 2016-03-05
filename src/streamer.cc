@@ -6,21 +6,20 @@
 
 #include "blake2.h"
 #include "avon.h"
+#include "streamer.h"
 
 #define HERE() ({fprintf(stderr, "@%d\n", __LINE__);})
 
 using namespace v8;
 using namespace node;
 
-Streamer::Streamer(int algo) : algorithm(algo)
+Streamer::Streamer(int algo)
 {
-	resultLen = BLAKE2B_OUTBYTES;
-	blake2b_init(state, resultLen);
+	mLength = BLAKE2B_OUTBYTES;
+	blake2b_init(state, mLength);
 }
 
-Streamer::~Streamer()
-{
-}
+Streamer::~Streamer() {}
 
 NAN_MODULE_INIT(Streamer::Initialize)
 {
@@ -72,7 +71,7 @@ NAN_METHOD(Streamer::FinalB)
 	Nan::HandleScope();
 	Streamer* hash = ObjectWrap::Unwrap<Streamer>(info.Holder());
 	hash->Final();
-	info.GetReturnValue().Set(Nan::CopyBuffer((const char *)hash->result, hash->resultLen).ToLocalChecked());
+	info.GetReturnValue().Set(Nan::CopyBuffer((const char *)hash->mResult, hash->mLength).ToLocalChecked());
 }
 
 void Streamer::Update(const void *buffer, size_t length)
@@ -82,5 +81,5 @@ void Streamer::Update(const void *buffer, size_t length)
 
 void Streamer::Final()
 {
-	blake2b_final(state, result, resultLen);
+	blake2b_final(state, mResult, mLength);
 }

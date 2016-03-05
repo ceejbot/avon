@@ -6,6 +6,7 @@ var
     bindings   = require('bindings'),
     fs         = require('fs'),
     path       = require('path'),
+    stream     = require('stream'),
     blake2     = bindings('blake2'),
     createHash = require('../streaming')
     ;
@@ -16,30 +17,32 @@ var testbuffer;
 
 describe('blake2 streaming hash', function()
 {
-    it('can be constructed', function(done)
+    it('can be constructed', function()
     {
         var streamer = createHash(2);
         streamer.must.be.an.object();
         streamer.constructor.name.must.equal('Streamer');
-        done();
     });
 
     it('implements stream.Writable', function()
     {
         var streamer = createHash(2);
-        streamer.must.have.property('update');
-        streamer.update.must.be.a.function();
+        streamer.writable.must.be.true();
     });
 
-    it('exposes a native update() function', function(done)
+    it('exposes a native update() function', function()
     {
         var result = createHash(2);
         result.must.have.property('update');
         result.update.must.be.a.function();
-        done();
     });
 
-    it('exposes a native final() function');
+    it('exposes a native final() function', function()
+    {
+        var result = createHash(2);
+        result.must.have.property('final');
+        result.final.must.be.a.function();
+    });
 
     it('can hash a file stream correctly', function(done)
     {

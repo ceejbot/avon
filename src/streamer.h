@@ -2,6 +2,7 @@
 #define STREAMER_H
 
 #include <node.h>
+#include "avon.h"
 
 class Streamer : public node::ObjectWrap
 {
@@ -26,11 +27,9 @@ class Streamer : public node::ObjectWrap
 		}
 
 		blake2b_state state[1];
-		int algorithm;
-		size_t resultLen;
-		// The 2S hashes emit 32 bytes instead of 64, so we get away with
-		// this size.
-		unsigned char result[BLAKE2B_OUTBYTES];
+		size_t mLength;
+		// The 2S hashes emit 32 bytes instead of 64, so we get away with this size.
+		unsigned char mResult[BLAKE2B_OUTBYTES];
 };
 
 #endif
