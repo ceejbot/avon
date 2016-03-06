@@ -38,10 +38,35 @@ function wrapperFile(algo, fname)
 	return deferred.promise;
 }
 
-// blake2bp - multicore, 64
+function sumBuffer(buffer, algorithm, callback)
+{
+	if (typeof algorithm === 'function')
+	{
+		callback = algorithm;
+		algorithm = B;
+	}
+	return wrapper(algorithm, buffer).nodeify(callback);
+}
+
+function sumFile(fname, algorithm, callback)
+{
+	if (typeof algorithm === 'function')
+	{
+		callback = algorithm;
+		algorithm = B;
+	}
+	return wrapperFile(algorithm, fname).nodeify(callback);
+}
 
 module.exports =
 {
+	// convenience wrappers
+	sumBuffer:  sumBuffer,
+	sumFile:    sumFile,
+	sumStream:  require('./streaming'),
+	ALGORITHMS: require('./streaming').ALGORITHMS,
+
+	// exposing the implementations
 	blake2:           function(buffer, callback) { return wrapper(B, buffer).nodeify(callback); },
 	blake2SMP:        function(buffer, callback) { return wrapper(BP, buffer).nodeify(callback); },
 	blake2_32:        function(buffer, callback) { return wrapper(S, buffer).nodeify(callback); },
@@ -50,9 +75,4 @@ module.exports =
 	blake2SMPFile:    function(fname, callback) { return wrapperFile(BP, fname).nodeify(callback); },
 	blake2_32File:    function(fname, callback) { return wrapperFile(S, fname).nodeify(callback); },
 	blake2_32SMPFile: function(fname, callback) { return wrapperFile(SP, fname).nodeify(callback); },
-	sumStream:        require('./streaming')
 };
-
-// Aliases for the most common.
-module.exports.sumBuffer = module.exports.blake2;
-module.exports.sumFile = module.exports.blake2File;
