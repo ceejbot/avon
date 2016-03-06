@@ -34,6 +34,13 @@ StreamingWrap.prototype._write = function(data, encoding, callback)
 	callback();
 };
 
+StreamingWrap.prototype.update = function(data)
+{
+	if (typeof data === 'string') data = new Buffer(data);
+	assert(Buffer.isBuffer(data), 'better pass a buffer, buddy');
+	this.hash.update(data);
+};
+
 StreamingWrap.prototype.digest = function(type)
 {
 	this._finalized = true;

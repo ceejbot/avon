@@ -49,6 +49,29 @@ describe('blake2 streaming hash', function()
 		streamer.writable.must.be.true();
 	});
 
+	it('provides an update() function', function()
+	{
+		var result = createHash(Avon.ALGORITHMS.SP);
+		result.must.have.property('update');
+		result.update.must.be.a.function();
+	});
+
+	it('update() demands a string or buffer', function()
+	{
+		var hash = createHash(Avon.ALGORITHMS.SP);
+		function shouldThrow() { hash.update({ foo: 'bar' }); }
+		shouldThrow.must.throw(/buffer, buddy/);
+	});
+
+	it('update, like, does something', function()
+	{
+		var empty = createHash(Avon.ALGORITHMS.SP).digest('hex');
+		var hash = createHash(Avon.ALGORITHMS.SP);
+		hash.update('hello buddy');
+		var digest = hash.digest('hex');
+		digest.must.not.equal(empty);
+	});
+
 	it('provides a digest() function', function()
 	{
 		var result = createHash(Avon.ALGORITHMS.SP);

@@ -15,7 +15,7 @@ Tested on node 0.10, 4.x, and 5.x.
 
 ## Usage
 
-All four functions take an optional callback. If no callback is provided, they return promises. Use the flow control method you prefer! The calculated hash is a node Buffer.
+Avon exports `sumFile`, 'sumBuffer', and `sumStream` functions to calculate a hash for whatever sort of data you have. All three functions take an optional callback. If no callback is provided, they return promises. Use the flow control method you prefer! The calculated hash is a node Buffer.
 
 If you don't specify an algorithm, the 64-bit single-core `B` algorithm is used.
 
@@ -39,7 +39,7 @@ Avon.sumBuffer(buf, function(err, buffer)
 {
 	if (err) console.error('noooo!');
 	else console.log(buffer.toString('hex'))
-})
+});
 ```
 
 There are variations that take a filename as input:
@@ -49,7 +49,7 @@ Avon.sumFile('my_file.dat', , Avon.ALGORITHMS.SP, function(err, buffer)
 {
 	if (err) console.error('noooo!');
 	else console.log(buffer.toString('hex'))
-})
+});
 ```
 
 Or create a stream:
@@ -70,15 +70,15 @@ input.pipe(hasher);
 
 ## API
 
-Algorithms: `Avon.ALGORITHMS` exports the enum-like list of algorithms: `B`, `BP`, `S`, and `SP`.
+`Avon.ALGORITHMS` exports the enum-like list of algorithms: `B`, `BP`, `S`, and `SP`.
 
-The following function are exported. This chart might help you decide which to use.
+Blake2 provides a bewildering variety of variations. Avon exposes all of them. This chart might help you decide which to use.
 
 | function | input | arch | multicore? | algo name
 | --- | --- | --- | --- | ---
-| sumStream | stream | both | both | pass algo name
-| sumBuffer | buffer | both | both | pass algo name
-| sumFile | file | 64 | both | both | pass algo name
+| sumStream | stream | * | * | pass algo name
+| sumBuffer | buffer | * | * | pass algo name
+| sumFile | file | * | * | pass algo name
 | blake2  | buffer | 64 | n | B
 | blake2SMP  | buffer | 64 | y | BP
 | blake2_32  | buffer | 32 | n | S
