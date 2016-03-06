@@ -15,7 +15,7 @@ Tested on node 0.10, 4.x, and 5.x.
 
 ## Usage
 
-Avon exports `sumFile`, 'sumBuffer', and `sumStream` functions to calculate a hash for whatever sort of data you have. All three functions take an optional callback. If no callback is provided, they return promises. Use the flow control method you prefer! The calculated hash is a node Buffer.
+Avon exports `sumFile()`, `sumBuffer()`, and `sumStream()` functions to calculate a hash for whatever sort of data you have. All three functions take an optional callback. If no callback is provided, they return promises. Use the flow control method you prefer! The calculated hash is a node Buffer.
 
 If you don't specify an algorithm, the 64-bit single-core `B` algorithm is used.
 
