@@ -198,7 +198,7 @@ NAN_MODULE_INIT(InitAll)
 		Nan::New<String>("b2_buffer").ToLocalChecked(),
 		Nan::GetFunction(Nan::New<FunctionTemplate>(HashBuffer)).ToLocalChecked()
 	);
-	Streamer::Initialize(target);
+	AvonStream::Initialize(target);
 }
 
 NODE_MODULE(blake2, InitAll)

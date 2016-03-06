@@ -9,6 +9,7 @@ var
 	;
 
 var correct2B = '7eb5d436ac77cb137329e74074501e484f4a9ed15f32b4be56842a8f285ebe4989cf89dd3794a8aee56e5964f3f5cd07f1b019611ce724141fd2a4b245d0d1a0';
+var correct2S = 'e58137b4c75c81b4b20bce99cc742335e3e9e8b8e57d2290670c8f3235f4bff3';
 var testp = path.resolve(__dirname, './test.png');
 var testbuffer;
 
@@ -24,7 +25,7 @@ describe('blake2', function()
 		});
 	});
 
-	describe('core', function()
+	describe('exports', function()
 	{
 		it('exports eight hash functions', function()
 		{
@@ -33,6 +34,7 @@ describe('blake2', function()
 			funcs.length.must.be.above(8);
 			for (var i = 0; i < funcs.length; i++)
 			{
+				if (funcs[i] === 'ALGORITHMS') return; // the one exception
 				Blake2[funcs[i]].must.be.a.function();
 			}
 		});
@@ -42,7 +44,7 @@ describe('blake2', function()
 			var funcs = Object.keys(Blake2);
 			funcs.forEach(function(f)
 			{
-				if (f === 'sumStream') return; // the one exception
+				if (f === 'sumStream' || f === 'ALGORITHMS') return; // the exceptions
 				var res = Blake2[f](testp);
 				res.must.be.an.object();
 				res.must.have.property('then');
@@ -63,11 +65,6 @@ describe('blake2', function()
 
 	describe('blake2 64-bit single core', function()
 	{
-		it('is aliased as sumBuffer', function()
-		{
-			Blake2.blake2.must.equal(Blake2.sumBuffer);
-		});
-
 		it('hashes a buffer correctly', function(done)
 		{
 			Blake2.blake2(testbuffer, function(err, hash)
@@ -92,11 +89,6 @@ describe('blake2', function()
 	describe('blake2File 64-bit single core', function()
 	{
 		var first;
-
-		it('is aliased as sumFile', function()
-		{
-			Blake2.blake2File.must.equal(Blake2.sumFile);
-		});
 
 		it('returns an error if it cannot find target file', function(done)
 		{
@@ -220,6 +212,42 @@ describe('blake2', function()
 				hash.toString('hex').must.equal(result);
 				done();
 			}).done();
+		});
+	});
+
+	describe('sumBuffer', function()
+	{
+		it('defaults to B if no algorithm is passed', function(done)
+		{
+			Blake2.sumBuffer(testbuffer, function(err, hash)
+			{
+				demand(err).not.exist();
+				hash.toString('hex').must.equal(correct2B);
+				done();
+			});
+		});
+	});
+
+	describe('sumFile', function()
+	{
+		it('defaults to B if no algorithm is passed', function(done)
+		{
+			Blake2.sumFile(testp, function(err, hash)
+			{
+				demand(err).not.exist();
+				hash.toString('hex').must.equal(correct2B);
+				done();
+			});
+		});
+
+		it('respects a passed-in algorithm', function(done)
+		{
+			Blake2.sumFile(testp, 2, function(err, hash)
+			{
+				demand(err).not.exist();
+				hash.toString('hex').must.equal(correct2S);
+				done();
+			});
 		});
 	});
 

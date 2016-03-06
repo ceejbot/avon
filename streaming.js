@@ -6,16 +6,21 @@ var
 	util     = require('util')
 	;
 
+var ALGORITHMS = { 'B': 0, 'BP': 1, 'S': 2, 'SP': 3 };
+
 function createStreamingHash(algorithm)
 {
-	return new StreamingWrap();
+	if (typeof algorithm === 'string')
+		algorithm = ALGORITHMS[algorithm];
+	assert(typeof algorithm === 'number' && algorithm < 4, 'you must pass an algorithm number from Avon.ALGORITHMS');
+	return new StreamingWrap(algorithm);
 }
 
-function StreamingWrap(opts)
+function StreamingWrap(algorithm)
 {
 	this._finalized = false;
-	this.hash = new blake2.Streamer();
-	stream.Writable.call(this, opts);
+	this.hash = new blake2.AvonStream(algorithm);
+	stream.Writable.call(this);
 }
 util.inherits(StreamingWrap, stream.Writable);
 
@@ -29,6 +34,13 @@ StreamingWrap.prototype._write = function(data, encoding, callback)
 	callback();
 };
 
+StreamingWrap.prototype.update = function(data)
+{
+	if (typeof data === 'string') data = new Buffer(data);
+	assert(Buffer.isBuffer(data), 'better pass a buffer, buddy');
+	this.hash.update(data);
+};
+
 StreamingWrap.prototype.digest = function(type)
 {
 	this._finalized = true;
@@ -38,3 +50,4 @@ StreamingWrap.prototype.digest = function(type)
 
 module.exports = createStreamingHash;
 createStreamingHash.StreamingWrap = StreamingWrap;
+createStreamingHash.ALGORITHMS = ALGORITHMS;
