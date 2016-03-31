@@ -66,7 +66,7 @@ input.pipe(hasher);
 Blake2 provides a bewildering variety of variations. Avon exposes all of them both in the general-purpose functions given above, and in some convenience wrappers. This chart might help you decide which to use.
 
 | function | input | arch | multicore? | async? | algo name
-| --- | --- | --- | --- | ---
+| --- | --- | --- | --- | --- | ---
 | sumStream | stream | * | * | - | pass algo name
 | sumBuffer | buffer | * | * | n | pass algo name
 | sumFile | file | * | * | y | pass algo name
