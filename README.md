@@ -15,37 +15,28 @@ Tested on node 0.10, 4.x, and 5.x.
 
 ## Usage
 
-Avon exports `sumFile()`, `sumBuffer()`, and `sumStream()` functions to calculate a hash for whatever sort of data you have. All three functions take an optional callback. If no callback is provided, they return promises. Use the control flow method you prefer! The calculated hash is a node Buffer.
+Avon exports `sumFile()`, `sumBuffer()`, and `sumStream()` functions to calculate a hash for whatever sort of data you have. `sumBuffer()` is synchronous. `sumFile()` and `sumStream()` take an optional callback. If no callback is provided, they return promises. Use the control flow method you prefer! The calculated hash is a node Buffer.
 
 If you don't specify an algorithm, the 64-bit single-core `B` algorithm is used.
 
-```javascript
+```js
 var Avon = require('avon');
 var assert = require('assert');
 
 var buf = new Buffer('this is some input');
 
-Avon.sumBuffer(buf, Avon.ALGORITHMS.BP)
-.then(function(hash)
-{
-	assert(hash instanceof Buffer);
-	console.log(hash.toString('hex'));
-}, function(err)
-{
-	console.error('noooooo! ' + err.message);
-}).done();
+var hash = Avon.sumBuffer(buf, Avon.ALGORITHMS.BP);
+assert(hash instanceof Buffer);
+console.log(hash.toString('hex'));
 
-Avon.sumBuffer(buf, function(err, buffer)
-{
-	if (err) console.error('noooo!');
-	else console.log(buffer.toString('hex'))
-});
+var sum = Avon.sumBuffer(buf, Avon.ALGORITHMS.SP);
+console.log(sum.toString('hex');
 ```
 
-There are variations that take a filename as input:
+Want to hash a file? Sure!
 
 ```javascript
-Avon.sumFile('my_file.dat', , Avon.ALGORITHMS.SP, function(err, buffer)
+Avon.sumFile('my_file.dat', Avon.ALGORITHMS.SP, function(err, buffer)
 {
 	if (err) console.error('noooo!');
 	else console.log(buffer.toString('hex'))
@@ -72,21 +63,21 @@ input.pipe(hasher);
 
 `Avon.ALGORITHMS` exports the enum-like list of algorithms: `B`, `BP`, `S`, and `SP`.
 
-Blake2 provides a bewildering variety of variations. Avon exposes all of them. This chart might help you decide which to use.
+Blake2 provides a bewildering variety of variations. Avon exposes all of them both in the general-purpose functions given above, and in some convenience wrappers. This chart might help you decide which to use.
 
-| function | input | arch | multicore? | algo name
+| function | input | arch | multicore? | async? | algo name
 | --- | --- | --- | --- | ---
-| sumStream | stream | * | * | pass algo name
-| sumBuffer | buffer | * | * | pass algo name
-| sumFile | file | * | * | pass algo name
-| blake2  | buffer | 64 | n | B
-| blake2SMP  | buffer | 64 | y | BP
-| blake2_32  | buffer | 32 | n | S
-| blake2_32SMP  | buffer | 32 | y | SP
-| blake2File | file | 64 | n | B
-| blake2SMPFile | file | 64 | y | BP
-| blake2_32File | file | 32 | n | S
-| blake2_32SMPFile | file | 32 | y | SP
+| sumStream | stream | * | * | - | pass algo name
+| sumBuffer | buffer | * | * | n | pass algo name
+| sumFile | file | * | * | y | pass algo name
+| blake2  | buffer | 64 | n | n | B
+| blake2SMP  | buffer | 64 | y | n | BP
+| blake2_32  | buffer | 32 | n | n | S
+| blake2_32SMP  | buffer | 32 | y | n | SP
+| blake2File | file | 64 | n | y | B
+| blake2SMPFile | file | 64 | y | y | BP
+| blake2_32File | file | 32 | n | y | S
+| blake2_32SMPFile | file | 32 | y | y | SP
 
 ## Notes
 
