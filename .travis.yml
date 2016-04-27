@@ -4,8 +4,9 @@ node_js:
     - "0.10"
     - "4.*"
     - "5.*"
-script:
-    - npm run travis
+    - "6.*"
+script: npm run travis
+after_success: npm run coverage
 env:
   - CXX=g++-4.8
 addons:

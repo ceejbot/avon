@@ -38,6 +38,6 @@
     "build": "node-gyp build",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "test": "mocha -R spec test",
-    "travis": "nyc mocha -R spec test && npm run coverage"
+    "travis": "nyc mocha -R spec test"
   }
 }
