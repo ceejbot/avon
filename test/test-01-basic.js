@@ -196,16 +196,14 @@ describe('blake2', function()
 
 		it('throws when given a bad algorithm', function()
 		{
-			function shouldThrow()
-			{ return Blake2.sumBuffer(testbuffer, 47); }
+			function shouldThrow() { return Blake2.sumBuffer(testbuffer, 47); }
 
 			shouldThrow.must.throw(/Unknown hash type\./);
 		});
 
 		it('throws when given non-buffer input', function()
 		{
-			function shouldThrow()
-			{ return Blake2.sumBuffer('foo', 47); }
+			function shouldThrow() { return Blake2.sumBuffer('foo', 47); }
 
 			shouldThrow.must.throw(/buffer/);
 		});
