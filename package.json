@@ -1,7 +1,7 @@
 {
   "name": "avon",
   "description": "node bindings for the blake2 cryptographic hash",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "author": "C J Silverio <ceejceej@gmail.com>",
   "bugs": {
     "url": "https://github.com/ceejbot/avon/issues"
