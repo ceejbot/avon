@@ -11,7 +11,7 @@ All four algorithms are different & will produce different sums. Choose the one 
 
 [![on npm](https://img.shields.io/npm/v/avon.svg?style=flat)](https://www.npmjs.com/package/avon) [![Build Status](http://img.shields.io/travis/ceejbot/avon/master.svg?style=flat)](https://travis-ci.org/ceejbot/avon) [![Coverage Status](https://img.shields.io/coveralls/ceejbot/avon.svg?style=flat)](https://coveralls.io/github/ceejbot/avon?branch=master)
 
-Tested on node 0.10, 4.x, 5.x, and 6.x.
+Tested on node 4.x, 6.x, and 7.x.
 
 ## Usage
 
