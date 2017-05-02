@@ -1,5 +1,7 @@
 # avon
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/ceejbot/avon.svg)](https://greenkeeper.io/)
+
 Node bindings for the [blake2](https://blake2.net) cryptographic hash function. The relationship of Avon to Blake is of course [obvious](https://en.wikipedia.org/wiki/Kerr_Avon).
 
 Blake2 provides four different hashing functions:
