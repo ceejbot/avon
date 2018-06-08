@@ -83,7 +83,7 @@ class FileWorker : public Nan::AsyncWorker
 				Nan::Null(),
 				Nan::CopyBuffer(hash, length).ToLocalChecked()
 			};
-			callback->Call(2, argv);
+			callback->Call(2, argv, async_resource);
 		};
 
 	private:
