@@ -23,7 +23,7 @@ If you don't specify an algorithm, the 64-bit single-core `B` algorithm is used.
 var Avon = require('avon');
 var assert = require('assert');
 
-var buf = new Buffer('this is some input');
+var buf = Buffer.from('this is some input');
 
 var hash = Avon.sumBuffer(buf, Avon.ALGORITHMS.BP);
 assert(hash instanceof Buffer);

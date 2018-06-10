@@ -1,11 +1,12 @@
 /*global before:true describe:true, it:true, beforeEach: true, afterEach:true */
+/* eslint prefer-arrow-callback:0 */
 'use strict';
 
-var
+const
 	demand = require('must'),
-	fs        = require('fs'),
-	path      = require('path'),
-	Blake2    = require('../index')
+	fs     = require('fs'),
+	path   = require('path'),
+	Blake2 = require('../index')
 	;
 
 var correct2B = '7eb5d436ac77cb137329e74074501e484f4a9ed15f32b4be56842a8f285ebe4989cf89dd3794a8aee56e5964f3f5cd07f1b019611ce724141fd2a4b245d0d1a0';
@@ -123,8 +124,7 @@ describe('blake2', function()
 
 		it('hashes a file', function(done)
 		{
-			Blake2.blake2SMPFile(testp)
-			.then(function(hash)
+			Blake2.blake2SMPFile(testp).then(function(hash)
 			{
 				hash.must.be.instanceof(Buffer);
 				hash.length.must.equal(64);
@@ -146,8 +146,7 @@ describe('blake2', function()
 
 		it('hashes a file', function(done)
 		{
-			Blake2.blake2_32File(testp)
-			.then(function(hash)
+			Blake2.blake2_32File(testp).then(function(hash)
 			{
 				hash.must.be.instanceof(Buffer);
 				hash.length.must.equal(32);
@@ -169,8 +168,7 @@ describe('blake2', function()
 
 		it('hashes a file', function(done)
 		{
-			Blake2.blake2_32SMPFile(testp)
-			.then(function(hash)
+			Blake2.blake2_32SMPFile(testp).then(function(hash)
 			{
 				hash.must.be.instanceof(Buffer);
 				hash.length.must.equal(32);
@@ -246,7 +244,7 @@ describe('blake2', function()
 
 		it('respond with an error if you pass a non-string', function(done)
 		{
-			Blake2.sumFile(new Buffer('whatever'), function(err, hash)
+			Blake2.sumFile(Buffer.from('whatever'), function(err, hash)
 			{
 				err.must.be.instanceof(Error);
 				err.message.must.equal('You must pass a string filename as input.');

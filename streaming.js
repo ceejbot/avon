@@ -36,7 +36,7 @@ StreamingWrap.prototype._write = function(data, encoding, callback)
 
 StreamingWrap.prototype.update = function(data)
 {
-	if (typeof data === 'string') data = new Buffer(data);
+	if (typeof data === 'string') data = Buffer.from(data);
 	assert(Buffer.isBuffer(data), 'better pass a buffer, buddy');
 	this.hash.update(data);
 };

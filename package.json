@@ -13,12 +13,12 @@
     "readable-stream": "~2.2.2"
   },
   "devDependencies": {
-    "coveralls": "~2.11.8",
-    "eslint-config-ceejbot": "~1.0.3",
-    "mocha": "~3.2.0",
+    "coveralls": "~3.0.1",
+    "eslint-config-ceejbot": "~1.1.2",
+    "mocha": "~5.2.0",
     "must": "~0.13.1",
-    "nyc": "~10.0.0",
-    "xo": "~0.17.1"
+    "nyc": "~12.0.2",
+    "xo": "~0.21.1"
   },
   "directories": {
     "test": "test"
@@ -44,6 +44,10 @@
     "travis": "nyc mocha -R spec test && npm run lint"
   },
   "xo": {
-    "extends": "eslint-config-ceejbot"
+    "extends": "eslint-config-ceejbot",
+    "rules": {
+      "object-shorthand": 0,
+      "unicorn/prefer-starts-ends-with": 0
+    }
   }
 }

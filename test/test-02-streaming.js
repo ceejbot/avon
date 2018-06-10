@@ -1,11 +1,12 @@
 /*global before:true describe:true, it:true, beforeEach: true, afterEach:true */
+/* eslint prefer-arrow-callback:0 */
 'use strict';
 
-var
+const
 	demand     = require('must'),
 	fs         = require('fs'),
 	path       = require('path'),
-	Avon = require('../index'),
+	Avon       = require('../index'),
 	createHash = require('../index').sumStream
 	;
 
@@ -127,7 +128,7 @@ describe('blake2 streaming hash', function()
 	{
 		var hash = createHash(Avon.ALGORITHMS.SP);
 		hash.digest('hex');
-		function shouldThrow() { hash.write(new Buffer('hello')); }
+		function shouldThrow() { hash.write(Buffer.from('hello')); }
 		shouldThrow.must.throw(/finalized/);
 	});
 });

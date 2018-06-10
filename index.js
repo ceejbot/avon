@@ -1,10 +1,10 @@
-var
+const
 	bindings = require('bindings'),
 	blake2   = bindings('blake2'),
 	P        = require('p-promise')
 	;
 
-var B = 0,
+const B = 0,
 	BP = 1,
 	S = 2,
 	SP = 3;
@@ -16,7 +16,7 @@ function wrapperFile(algo, fname)
 
 	var deferred = P.defer();
 
-	blake2.b2_file(algo, fname, function(err, result)
+	blake2.b2_file(algo, fname, (err, result) =>
 	{
 		if (err) deferred.reject(err);
 		else deferred.resolve(result);
@@ -32,7 +32,7 @@ function sumBuffer(buffer, algorithm)
 
 	if (!Buffer.isBuffer(buffer))
 	{
-		throw new Error('You must pass a buffer as input.');
+		throw new TypeError('You must pass a buffer as input.');
 	}
 
 	return blake2.b2_buffer(algorithm, buffer);
@@ -51,8 +51,8 @@ function sumFile(fname, algorithm, callback)
 module.exports =
 {
 	// convenience wrappers
-	sumBuffer:  sumBuffer,
-	sumFile:    sumFile,
+	sumBuffer,
+	sumFile,
 	sumStream:  require('./streaming'),
 	ALGORITHMS: require('./streaming').ALGORITHMS,
 
