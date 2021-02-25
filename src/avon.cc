@@ -96,7 +96,7 @@ class FileWorker : public Nan::AsyncWorker
 
 NAN_METHOD(HashFile)
 {
-	int algo = info[0]->Uint32Value();
+	int algo = info[0]->Uint32Value(Nan::GetCurrentContext()).FromJust();
 	Nan::Utf8String* name = new Nan::Utf8String(info[1]);
 	Nan::Callback *callback = new Nan::Callback(info[2].As<Function>());
 	Nan::AsyncQueueWorker(new FileWorker(callback, algo, **name));
@@ -104,7 +104,7 @@ NAN_METHOD(HashFile)
 
 NAN_METHOD(HashBufferSync)
 {
-	int algo = info[0]->Uint32Value();
+	int algo = info[0]->Uint32Value(Nan::GetCurrentContext()).FromJust();
 	Local<Object> buffer = info[1].As<Object>();
 	size_t length = node::Buffer::Length(buffer);
 	char* data = node::Buffer::Data(buffer);

@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "bindings": "^1.2.1",
-    "nan": "2.10.0",
+    "nan": "2.14.2",
     "p-promise": "~0.5.0",
     "readable-stream": "~2.2.2"
   },
