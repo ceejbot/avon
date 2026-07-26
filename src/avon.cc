@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string>
 #include <node.h>
 #include "nan.h"
 
@@ -15,7 +16,7 @@ using namespace v8;
 class FileWorker : public Nan::AsyncWorker
 {
 	public:
-		FileWorker(Nan::Callback *callback, int algo, char* fname)
+		FileWorker(Nan::Callback *callback, int algo, const char* fname)
 		: Nan::AsyncWorker(callback)
 			, algorithm(algo)
 			, filename(fname)
@@ -58,7 +59,7 @@ class FileWorker : public Nan::AsyncWorker
 			}
 
 			FILE *f = NULL;
-			f = fopen(filename, "rb");
+			f = fopen(filename.c_str(), "rb");
 
 			if (!f)
 			{
@@ -68,6 +69,7 @@ class FileWorker : public Nan::AsyncWorker
 
 			if (streamFunc(f, hash, length) < 0)
 			{
+				fclose(f);
 				SetErrorMessage("Failed to calculate hash.");
 				return;
 			}
@@ -88,7 +90,7 @@ class FileWorker : public Nan::AsyncWorker
 
 	private:
 		int algorithm;
-		char* filename;
+		std::string filename;
 		size_t length;
 		// The 2S hashes emit 32 bytes instead of 64, so we get away with this size.
 		char hash[BLAKE2B_OUTBYTES];
@@ -97,9 +99,9 @@ class FileWorker : public Nan::AsyncWorker
 NAN_METHOD(HashFile)
 {
 	int algo = info[0]->Uint32Value();
-	Nan::Utf8String* name = new Nan::Utf8String(info[1]);
+	Nan::Utf8String name(info[1]);
 	Nan::Callback *callback = new Nan::Callback(info[2].As<Function>());
-	Nan::AsyncQueueWorker(new FileWorker(callback, algo, **name));
+	Nan::AsyncQueueWorker(new FileWorker(callback, algo, *name));
 }
 
 NAN_METHOD(HashBufferSync)
